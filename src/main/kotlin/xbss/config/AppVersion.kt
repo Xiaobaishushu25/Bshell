@@ -32,8 +32,9 @@ package xbss.config
  *            0.38 -- 2023年5月10日20:07:32 ：解决了bug7
  *            0.40 -- 2023年5月12日00:10:46 ：将文件树加载转移到后台线程，避免界面初始化用时过长出现界面无响应的情况
  *            0.41 -- 2023年5月16日00:38:34 ：解决了bug8，使用削减 █（Unicode U+2588）：Full Block字符的字体FiraFZH2.ttf
+ *            0.42 -- 2023年5月17日16:52:21 ：新增了对于ctrl+u(退格)、ctrl+u(剪切(删除)光标处到行首的所有字符)的处理
  *
  */
 object AppVersion {
-    const val version = "0.41"
+    const val version = "0.42"
 }

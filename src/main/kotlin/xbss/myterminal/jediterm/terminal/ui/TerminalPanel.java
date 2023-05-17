@@ -1815,7 +1815,8 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
   }
 
   /**
-   * 键盘按下事件，我新加了Ctrl+C（中断事件）、ctrl+x（挂起）、ctrl+d（exit）的处理
+   * 键盘按下事件，我新加了Ctrl+C（中断事件）、ctrl+x（挂起）、ctrl+d（exit）、
+   *    *         ctrl+u(退格)、ctrl+u(剪切(删除)光标处到行首的所有字符)的处理
    * @param e
    * @return
    */
@@ -1834,18 +1835,23 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
         return true;
       }
       if (keychar == 'c' && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
-//        System.out.println("按下CTrl+C");
         myTerminalStarter.sendBytes(new byte[]{3},true);
         return true;
       }
       if (keychar == 'd' && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
-//        System.out.println("按下CTrl+C");
         myTerminalStarter.sendBytes(new byte[]{4},true);
         return true;
       }
       if (keychar == 'x' && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
-//        System.out.println("按下CTrl+C");
         myTerminalStarter.sendBytes(new byte[]{24},true);
+        return true;
+      }
+      if (keychar == 'h' && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
+        myTerminalStarter.sendBytes(new byte[]{8},true);
+        return true;
+      }
+      if (keychar == 'u' && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
+        myTerminalStarter.sendBytes(new byte[]{21},true);
         return true;
       }
       // CTRL + Space is not handled in KeyEvent; handle it manually

@@ -212,6 +212,12 @@ class CommandArea(private val ssh: SSH,private val mainWindow: MainWindow):Stack
                         sendCommand()
                         it.consume()
                     }
+                    KeyCode.BACK_SPACE -> {
+                        if (it.isControlDown){
+                            text = ""
+                            it.consume()
+                        }
+                    }
                     else -> {}
                 }
             }

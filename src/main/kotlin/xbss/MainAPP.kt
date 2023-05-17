@@ -29,9 +29,7 @@ import kotlin.system.exitProcess
  * @author  Xbss
  * @create 2023-03-23-18:55
  * @version  1.0
- * @describe TODO：切换背景
- *     bug:1.当在终端输入一行过长时不会自动换行而是从头开始覆盖类似\r的效果，不知道怎么解决
- *         2.刚初始化命令界面会时有是一大块黑的
+ * @describe
  */
 class MainAPP:Application() {
     private lateinit var tabPane:TabPane
