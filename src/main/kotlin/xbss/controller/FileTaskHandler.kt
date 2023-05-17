@@ -1,9 +1,5 @@
 package xbss.controller
 
-import javafx.application.Platform
-import xbss.MainAPP
-import xbss.config.TextColor
-import xbss.ssh.SSH
 import xbss.utils.FileIOPane
 import xbss.view.MainWindow
 

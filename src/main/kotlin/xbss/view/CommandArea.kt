@@ -23,7 +23,6 @@ import javafx.util.Duration
 import xbss.MainAPP
 import xbss.config.AppData
 import xbss.config.TextColor
-import xbss.myterminal.jediterm.terminal.TextStyle
 import xbss.myterminal.jediterm.terminal.ui.JediTermWidget
 import xbss.myterminal.jediterm.terminal.ui.settings.DefaultSettingsProvider
 import xbss.ssh.SSH
@@ -348,8 +347,8 @@ class CommandArea(private val ssh: SSH,private val mainWindow: MainWindow):Stack
      * @param textStyle
      * @param text
      */
-    fun addNewLine(textStyle: TextStyle, text:String){
-        widget.addNewLine(textStyle,text)
+    fun addNewLine(textColor: TextColor, text:String){
+        widget.addNewLine(textColor.getTextStyle(),text)
     }
 
     /**

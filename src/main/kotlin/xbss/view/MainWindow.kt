@@ -1,6 +1,5 @@
 package xbss.view
 
-import javafx.event.EventHandler
 import javafx.geometry.Orientation
 import javafx.scene.control.SplitPane
 import javafx.scene.image.ImageView
@@ -14,13 +13,10 @@ import org.slf4j.LoggerFactory
 import xbss.MainAPP
 import xbss.config.InitSize
 import xbss.config.Setting
-import xbss.controller.FileCommandTask
-import xbss.controller.FileIOTask
+import xbss.config.TextColor
 import xbss.controller.FileTaskHandler
-import xbss.myterminal.jediterm.terminal.TextStyle
 import xbss.server.mapper.pojo.Account
 import xbss.ssh.SSH
-import xbss.utils.FileIOPane
 import xbss.utils.SystemData
 
 
@@ -126,8 +122,8 @@ class MainWindow(val account: Account,val ssh:SSH):AnchorPane(){
 //        messageArea.addNotice(pane)
         rightBar.addNotice(pane)
     }
-    fun addNewLine(textStyle: TextStyle, text:String){
-        commandArea.addNewLine(textStyle,text)
+    fun addNewLine(textColor: TextColor, text:String){
+        commandArea.addNewLine(textColor,text)
     }
     fun writeInfoLog(info: String){
         MainAPP.service.submit {
