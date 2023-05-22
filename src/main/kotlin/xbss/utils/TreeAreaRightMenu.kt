@@ -222,13 +222,28 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
             setSupport()
             setOnAction {
                 val path = Setting.savePathP.value
-                if (!isMultiple) {
-                    taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,item!!.path,path)
-                }else{
-                    for (treeItem in itemList!!){
-                        taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,treeItem.value.path,path)
+                File(path).apply {
+                    if (!exists()){
+                        //todo : 不存在的话弹出窗口询问是否坚持使用此目录或者修改
+                        if (mkdirs()){
+                            //todo ：创建失败给出提示(比如没有那么多盘符)
+                            if (!isMultiple) {
+                                taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,item!!.path,path)
+                            }else{
+                                for (treeItem in itemList!!){
+                                    taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,treeItem.value.path,path)
+                                }
+                            }
+                        }
                     }
                 }
+//                if (!isMultiple) {
+//                    taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,item!!.path,path)
+//                }else{
+//                    for (treeItem in itemList!!){
+//                        taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,treeItem.value.path,path)
+//                    }
+//                }
             }
         }
         reSave = MenuItem().apply {
@@ -236,7 +251,10 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
             setSupport()
             setOnAction {
                 DirectoryChooser().apply {
-                    initialDirectory = File(Setting.reSavePathP.value)
+                    File(Setting.reSavePathP.value).apply {
+                        if (exists())
+                            initialDirectory = this
+                    }
                     showDialog(treeArea.scene.window)?.let {
                         if (!isMultiple){
                             taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,item!!.path,it.absolutePath)

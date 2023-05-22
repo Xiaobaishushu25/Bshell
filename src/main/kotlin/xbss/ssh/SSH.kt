@@ -53,7 +53,7 @@ open class SSH(val account: Account) {
         }
         session.setConfig(properties)
         session.timeout = 25000
-        //todo 这边经常会报错Caused by: com.jcraft.jsch.JSchException: Auth fail或者Session.connect: java.net.SocketTimeoutException: Read timed out，记得处理一下
+        //这边经常会报错Caused by: com.jcraft.jsch.JSchException: Auth fail或者Session.connect: java.net.SocketTimeoutException: Read timed out，记得处理一下
         MainAPP.service.submit {
             try {
                 session.connect()

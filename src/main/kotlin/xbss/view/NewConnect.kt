@@ -65,7 +65,6 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
                     initCommand = initCommandT.text
                     comments = commentT.text
                 }
-                //todo 加个loading
 //                Platform.runLater { success.bind(testConnect(account)) }
                 success.bind(testConnect(account))
             }
