@@ -37,10 +37,12 @@ package xbss.config
  *                      ctrl+backspace 全部删除的快捷键
  *            0.43 -- 2023年5月18日16:49:23 ：优化了文件树图标的显示，现在创建名称为png的文件夹不会显示成图片的图标了
  *            0.44 -- 2023年5月23日10:54:02 ：优化了文件下载的处理，现在会判断设定文件夹是否存在
+ *            远程开发内容
+ *
  *            本地开发内容
  *
  *
  */
 object AppVersion {
-    const val version = "0.44"
+    const val version = "0.43"
 }
