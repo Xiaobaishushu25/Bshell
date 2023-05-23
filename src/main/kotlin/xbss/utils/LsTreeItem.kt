@@ -101,9 +101,7 @@ class LsTreeItem(val path: String):TreeItem<LsTreeItem.FileItem>(){
     }
 
 
-    override fun isLeaf(): Boolean {
-        return !isFolder
-    }
+    override fun isLeaf() = !isFolder
 
     /**
      * full name 格式如下：/data1/pjf/model/vgg11.pth|FILE
@@ -111,19 +109,32 @@ class LsTreeItem(val path: String):TreeItem<LsTreeItem.FileItem>(){
      */
     private fun setFullName(){
         val fileName = path.split("/").last()
-        when(fileName.split(".").last()){
-            "jpg","png","jpeg" -> this.value = FileItem(path,fileName,FileType.IMG)
-            "py" -> this.value = FileItem(path,fileName,FileType.PY)
-            "txt" -> this.value = FileItem(path,fileName,FileType.TXT)
-            "md" -> this.value = FileItem(path,fileName,FileType.MD)
-            "mp4" -> this.value = FileItem(path,fileName,FileType.VIDEO)
-            "deny" -> this.value = FileItem(path,fileName.split(".").first(),FileType.DENY)
-            else ->{
-                if (isLeaf)
-                    this.value = FileItem(path,fileName,FileType.FILE)
-                else
-                    this.value = FileItem(path,fileName,FileType.FOLDER)
+        if (isFolder)
+            this.value = FileItem(path,fileName,FileType.FOLDER)
+        else{
+            when(fileName.split(".").last()){
+                "jpg","png","jpeg" -> this.value = FileItem(path,fileName,FileType.IMG)
+                "py" -> this.value = FileItem(path,fileName,FileType.PY)
+                "txt" -> this.value = FileItem(path,fileName,FileType.TXT)
+                "md" -> this.value = FileItem(path,fileName,FileType.MD)
+                "mp4" -> this.value = FileItem(path,fileName,FileType.VIDEO)
+                "deny" -> this.value = FileItem(path,fileName.split(".").first(),FileType.DENY)
+                else -> this.value = FileItem(path,fileName,FileType.FILE)
             }
         }
+//        when(fileName.split(".").last()){
+//            "jpg","png","jpeg" -> this.value = FileItem(path,fileName,FileType.IMG)
+//            "py" -> this.value = FileItem(path,fileName,FileType.PY)
+//            "txt" -> this.value = FileItem(path,fileName,FileType.TXT)
+//            "md" -> this.value = FileItem(path,fileName,FileType.MD)
+//            "mp4" -> this.value = FileItem(path,fileName,FileType.VIDEO)
+//            "deny" -> this.value = FileItem(path,fileName.split(".").first(),FileType.DENY)
+//            else ->{
+//                if (isLeaf)
+//                    this.value = FileItem(path,fileName,FileType.FILE)
+//                else
+//                    this.value = FileItem(path,fileName,FileType.FOLDER)
+//            }
+//        }
     }
 }
