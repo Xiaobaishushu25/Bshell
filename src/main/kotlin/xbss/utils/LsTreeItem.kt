@@ -58,7 +58,7 @@ class LsTreeItem(val path: String):TreeItem<LsTreeItem.FileItem>(){
 //            files.removeAll(filter.toSet())
 //            files.addAll(filter)
 //            files.removeIf { it.filename.endsWith("cfg") } //有个cfg文件stat(path)就报错，直接去掉
-            //todo 按首字母排序
+            //todo 优化排序
         }else
             ssh!!.releaseChannel(sftp)
         setFullName()

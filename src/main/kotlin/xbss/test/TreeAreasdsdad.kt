@@ -81,7 +81,7 @@ class TreeAreasdsdad(): Application() {
                 null,
                 null))
             setOnAction {
-                //todo fanhui
+                //返回
             }
         }
         val update = Button().apply {
@@ -92,7 +92,7 @@ class TreeAreasdsdad(): Application() {
                 null,
                 null))
             setOnAction {
-                //todo 刷新文件夹
+                //刷新文件夹
             }
         }
         cdHBox = HBox(5.0,textField,up,update).apply {

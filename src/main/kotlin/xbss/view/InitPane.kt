@@ -133,8 +133,6 @@ class InitPane(private val tab: Tab):AnchorPane() {
 //                tab.content = mainWindow
 //                tab.text = account.nickname
 //                tab.reStatus(true)
-                    //todo 加个连接时的动画
-
                 }
             }
             setOnKeyPressed {

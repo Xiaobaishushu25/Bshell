@@ -15,16 +15,17 @@ import java.io.File
  */
 object Setting {
     val backgroundImagePathP = SimpleStringProperty("G:\\图片图标资源\\Image\\247402b1880511ebb6edd017c2d2eca2.jpg")
-    val savePathP = SimpleStringProperty("F:\\删除")
-    val reSavePathP = SimpleStringProperty("F:\\")
-    var image = Image(backgroundImagePathP.value)
+    val savePathP = SimpleStringProperty("E:\\")
+    val reSavePathP = SimpleStringProperty("E:\\")
+//    var image = Image(backgroundImagePathP.value)
+    var image:Image
     val opacityP = SimpleDoubleProperty(0.5)
     val isAutoResize = SimpleBooleanProperty(true)
     init {
         image = try {
             Image(backgroundImagePathP.value)
         }catch (e:Exception){
-            Image(this::class.java.getResourceAsStream("/img/back.png"))
+            Image(this::class.java.getResourceAsStream("/img/back.jpg"))
         }
         backgroundImagePathP.addListener { _,_,newValue ->
             File(newValue).let {
