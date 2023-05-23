@@ -40,7 +40,8 @@ package xbss.config
  *            远程开发内容
  *
  *
+ *
  */
 object AppVersion {
-    const val version = "0.44"
+    const val version = "0.43"
 }
