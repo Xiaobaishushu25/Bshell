@@ -43,5 +43,5 @@ package xbss.config
  *
  */
 object AppVersion {
-    const val version = "0.43"
+    const val version = "0.44"
 }
