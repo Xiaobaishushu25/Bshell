@@ -160,7 +160,13 @@ class FileIOPane(
             if (type==FileIOType.DOWN)
                 this.children.add(0, ImageView(ImageIcon.OPENFOLDER).apply {
                     style = "-fx-cursor:hand"
-                    setOnMouseClicked { Desktop.getDesktop().open(File(path));}
+                    setOnMouseClicked {
+                        //这样可以在已有窗口以一个tab方式打开
+                        //todo :这样仅支持windows系统
+                        Runtime.getRuntime().exec(arrayOf("cmd.exe", "/C", "start $path"))
+                        //新打开一个窗口
+//                        Desktop.getDesktop().open(File(path))
+                    }
                 })
             alignment = Pos.BOTTOM_RIGHT
         }

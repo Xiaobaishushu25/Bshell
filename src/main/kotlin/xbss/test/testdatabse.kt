@@ -14,17 +14,17 @@ import xbss.server.mapper.pojo.History
  * @describe
  */
 fun main() {
-    insertAccount(Account{
-        nickname = "msfg"
-        username = "msfgroup"
-        password = "msfg302"
-        host = "10.255.248.48"
-        port = "22"
-    })
-    insertHistory(History{
-        id = "515"
-        command = "java -version"
-    })
-    println(queryAccounts()[0])
-    println(queryHistorys()[0])
+//    insertAccount(Account{
+//        nickname = "msfg"
+//        username = "msfgroup"
+//        password = "msfg302"
+//        host = "10.255.248.48"
+//        port = "22"
+//    })
+//    insertHistory(History{
+//        id = "515"
+//        command = "java -version"
+//    })
+    println(queryAccounts())
+//    println(queryHistorys()[0])
 }
