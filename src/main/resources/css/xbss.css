@@ -68,12 +68,12 @@
     -fx-indent: 10;
 }
 
-.tree-cell:hover {
-    -fx-background-color: rgba(112, 154, 161, 0.5);
-    /*-fx-background-color: #20c42050;*/
-    -fx-background-insets: 0, 1, 2;
-    -fx-background: -fx-accent;
-}
+/*.tree-cell:hover {*/
+/*    -fx-background-color: rgba(112, 154, 161, 0.5);*/
+/*    !*-fx-background-color: #20c42050;*!*/
+/*    -fx-background-insets: 0, 1, 2;*/
+/*    -fx-background: -fx-accent;*/
+/*}*/
 
 .tree-cell:selected {
     -fx-background-color: #20c42080;
