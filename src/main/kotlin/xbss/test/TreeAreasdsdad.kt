@@ -57,7 +57,7 @@ class TreeAreasdsdad(): Application() {
         }
             val backgroundImage = BackgroundImage(
 //            Image(this::class.java.getResourceAsStream("/img/back.png"),textFieldLocal!!.width,textFieldLocal!!.height,false,true),  // 图片路径
-            Image(this::class.java.getResourceAsStream("/img/back.png")),  // 图片路径
+            Image(this::class.java.getResourceAsStream("/img/back.jpg")),  // 图片路径
             BackgroundRepeat.NO_REPEAT,  // 图片重复方式
             BackgroundRepeat.NO_REPEAT,
             BackgroundPosition.DEFAULT,
