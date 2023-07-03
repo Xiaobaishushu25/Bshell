@@ -144,7 +144,6 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                 expandItem(defaultPath)
             }
         }
-
         treeView.setCellFactory {
             val label = Label()
             val cell = object : TreeCell<LsTreeItem.FileItem>() {
@@ -226,6 +225,10 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
         treeView.stylesheets.add(this::class.java.getResource("/css/xbss.css").toExternalForm())
         treeView.prefWidth = InitSize.TREEVIEW_WIDTH
         treeView.prefHeight = InitSize.TEXTAREA_HEIGHT-30.0
+        //AppVersion记录的bug9：打jar包后文件树多选操作不会即刻生效，只有滚动一下或者改变文件树大小后才会将选中item高亮
+        treeView.selectionModel.selectedItemProperty().addListener { _,_,_ ->
+            treeView.refresh()
+        }
         registerShortCut()
         // 用反射监听item左边的小三角是否被点击，觉得不是很有必要，不写了
 //        val behavior = treeView.skinProperty().addListener { _,_,newSkin ->
