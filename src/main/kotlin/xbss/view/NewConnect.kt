@@ -141,6 +141,8 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
                     AppData.updateAccount(account)
                     update.set(account.nickname)
                 }else{
+                    //如果是迁移连接的话要给一个新的ID
+                    account.id = KeyUtil.genUniqueKey()
                     success.bind(testConnect(account))
                 }
             }

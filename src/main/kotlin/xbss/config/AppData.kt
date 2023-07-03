@@ -46,6 +46,11 @@ object AppData {
         accounts.removeIf { it.id == account.id }
         deleteAccountById(account.id)
     }
+
+    /**
+     * 更新账户信息，现根据id删除该账户，然后重新添加
+     * @param account
+     */
     fun updateAccount(account: Account){
         deleteAccountById(account)
         addAccount(account)
