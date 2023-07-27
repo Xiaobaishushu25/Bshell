@@ -33,8 +33,8 @@ import xbss.utils.PopConfirm
  */
 class InitPane(private val tab: Tab):AnchorPane() {
     companion object{
-        private val green = Paint.valueOf("#00FF00")
-        private val red = Paint.valueOf("#FF0000")
+        val green:Paint = Paint.valueOf("#00FF00")
+        val red:Paint = Paint.valueOf("#FF0000")
     }
     private lateinit var vBox:VBox //放所有的账户item
     private lateinit var ft:FadeTransition //登录动画

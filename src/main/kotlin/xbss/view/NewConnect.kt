@@ -12,8 +12,10 @@ import javafx.scene.control.Label
 import javafx.scene.control.PasswordField
 import javafx.scene.control.TextField
 import javafx.scene.image.ImageView
+import javafx.scene.input.MouseButton
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
+import javafx.scene.shape.Circle
 import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.util.Duration
@@ -42,6 +44,7 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
     private  var initCommandT:TextField = getTextFiled(double = 230.0)
     private  var commentT:TextField = getTextFiled(text = "无",double = 230.0, moveX = 30.0)
     private lateinit var tip:HBox
+    private lateinit var hisTry:HBox //历史尝试记录
     private lateinit var test:Button
     private lateinit var ft:FadeTransition//动画，展示完连接信息10秒后淡出
     override fun start(primaryStage: Stage?) {
@@ -77,7 +80,15 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
             isVisible = false
             alignment = Pos.CENTER_LEFT
             translateX = -100.0
+            //点击信息立刻删除，不需要等淡出
             setOnMouseClicked { isVisible = false }
+//            setStyle("-fx-border-width: 1px;-fx-border-color: green")
+
+        }
+        hisTry = HBox(5.0).apply {
+            alignment = Pos.CENTER
+//            translateX = -190.0
+//            setStyle("-fx-border-width: 1px;-fx-border-color: red")
         }
         ft =FadeTransition(Duration.millis(10000.0), tip).apply {
             fromValue = 1.0
@@ -93,11 +104,15 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
             HBox(15.0, getLabel("映射路径"), cdPathT),
             HBox(15.0, getLabel("初始命令"), initCommandT),
             HBox(15.0, getLabel("备注"), commentT).apply { alignment = Pos.BOTTOM_LEFT },
-            HBox(tip,test).apply { alignment = Pos.BOTTOM_RIGHT },
+            VBox(5.0,
+                HBox(tip,test).apply { alignment = Pos.BOTTOM_RIGHT },
+                hisTry
+                )
         )
+        VBox.setMargin(hisTry, Insets(5.0))
         vBox.padding = Insets(30.0)
         stage.apply {
-            scene = Scene(vBox,400.0,390.0)
+            scene = Scene(vBox,400.0,400.0)
             title = "新建连接"
             icons.add(ImageIcon.B)
             initModality(Modality.APPLICATION_MODAL)
@@ -147,12 +162,16 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
                 }
             }
         }
+        //这里的success可能有三个值，0：刚初始化；1：连接失败；2：连接成功
         success.addListener { _,_,newValue ->
-            test.isDisable = false
-            if (newValue==1)
+            if (newValue==1){
+                test.isDisable = false
                 showTip(false)
-            else
+            }
+            else if (newValue==2){
+                test.isDisable = false
                 showTip(true)
+            }
         }
     }
     private fun getLabel(text:String) = Label(text).apply { style = "-fx-font-size:15px;"}
@@ -173,6 +192,9 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
     }
     private fun showTip(success:Boolean){
         tip.children.clear()
+        hisTry.children.add(Circle(5.0).apply {
+            fill = if (success) InitPane.green else InitPane.red
+        })
         if (success){
             tip.children.addAll(
                 ImageView(ImageIcon.SUCCESS16),
