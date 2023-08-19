@@ -18,6 +18,8 @@ import javafx.scene.paint.Color
 import javafx.scene.paint.Paint
 import javafx.scene.shape.Rectangle
 import javafx.scene.shape.SVGPath
+import javafx.scene.text.Text
+import javafx.scene.text.TextFlow
 import javafx.stage.Popup
 import javafx.util.Duration
 import xbss.MainAPP
@@ -142,24 +144,60 @@ class CommandArea(private val ssh: SSH,private val mainWindow: MainWindow):Stack
                 val cell = object : ListCell<String>(){
                     override fun updateItem(item: String?, empty: Boolean) {
                         super.updateItem(item, empty)
-                        graphic = if (item!=null){ Label(item).apply {
-                            prefHeight = 25.0
-                            setOnMouseClicked {
-                                if (it.clickCount==2){
-                                    autoFill = true
-                                    textField.text = item
-                                    textField.positionCaret(this.text.length)
-                                    popup.hide()
+                        graphic = if (item!=null){
+                            val textFlow = TextFlow()
+                            val children = textFlow.children
+                            highlightKeyword(item,textField.text).forEach {
+                                if (it.first){
+                                    children.add(Text(it.second).apply { style = "-fx-font-size:13px;-fx-fill:red" })
+                                }else {
+                                    children.add(Text(it.second).apply {  style = "-fx-font-size:13px;" })
                                 }
                             }
-                        } } else null
+//                            val newItem = item.replace(textField.text, "-|||-|", true)
+//                            newItem.split("-|").apply {
+//                                for(s in this){
+//                                    if(s == "||"){
+//                                        children.add(Text(textField.text).apply { fill=Color.RED })
+//                                    }else if (s.isNotEmpty()){
+//                                        children.add(Text(s))
+//                                    }
+//                                }
+//                            }
+//                            Label(item).apply {
+//                            prefHeight = 25.0
+//                            //双击命令可以直接选择
+//                            setOnMouseClicked {
+//                                if (it.clickCount==2){
+//                                    autoFill = true
+//                                    textField.text = item
+//                                    textField.positionCaret(this.text.length)
+//                                    popup.hide()
+//                                }
+//                            }
+//                        }
+                            textFlow.apply {
+                                prefHeight = 20.0
+                                //双击命令可以直接选择
+                                setOnMouseClicked {
+                                    if (it.clickCount==2){
+                                        autoFill = true
+                                        textField.text = item
+                                        textField.positionCaret(item.length)
+                                        popup.hide()
+                                    }
+                                }
+                            }
+                        } else null
                     }
                 }
                 cell.focusedProperty().addListener { _,_,newValue ->
-                    cell.style = if (newValue) "-fx-background-color:#2e436e;" else "-fx-background-color:null"
+//                    cell.style = if (newValue) "-fx-background-color:#2e436e;" else "-fx-background-color:null"
+                    cell.style = if (newValue) "-fx-background-color:#7AC5CD;" else "-fx-background-color:null"
                 }
                 cell.selectedProperty().addListener { _,_,newValue ->
-                    cell.style = if (newValue) "-fx-background-color:#2e436e;" else "-fx-background-color:null"
+//                    cell.style = if (newValue) "-fx-background-color:#2e436e;" else "-fx-background-color:null"
+                    cell.style = if (newValue) "-fx-background-color:#7AC5CD;" else "-fx-background-color:null"
                 }
                 cell
             }
@@ -404,4 +442,27 @@ class CommandArea(private val ssh: SSH,private val mainWindow: MainWindow):Stack
     fun closeTerminal(){
         widget.close()
     }
+
+    /**
+     * 给定一个关键词和输入，忽略关键词大小写将输入拆分。
+     * @param input
+     * @param keyword
+     * @return 一个列表，item是pair，第一个Boolean表示此字符串是否需要高亮
+     */
+    fun highlightKeyword(input: String, keyword: String): List<Pair<Boolean,String>> {
+        val regex = Regex("(?i)($keyword)")
+        val matchResult = regex.find(input)
+        if (matchResult != null) {
+
+            val startIndex = matchResult.range.first
+            val endIndex = matchResult.range.last + 1
+            val beforeKeyword = input.substring(0, startIndex)
+            val highlightedKeyword = input.substring(startIndex, endIndex)
+            val afterKeyword = input.substring(endIndex)
+
+            return listOf(Pair(false,beforeKeyword),Pair(true,highlightedKeyword),Pair(false,afterKeyword))
+        }
+        return listOf(Pair(false,input))
+    }
+
 }
