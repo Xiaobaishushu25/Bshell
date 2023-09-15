@@ -1,6 +1,11 @@
 # Bshell
 ssh连接工具
+## **界面展示**
+1.主界面
+![img_2.png](img_2.png)
+![img.png](img.png)
 ![image](https://github.com/Xiaobaishushu25/Bshell/assets/76581880/4ef225f9-77f6-4fee-a451-04e929b1574d)
+2.工具栏
 
 ## **快捷键**
 

@@ -11,6 +11,7 @@ package xbss.config
  *       3.Jsch库已经很久没更新了，可以使用一个替代库： https://github.com/mwiede/jsch
  *                               或者阿帕奇的： https://github.com/apache/mina-sshd
  *       4.终端界面的esc的问题（进入vim模式发现的）？
+ *       5.将h2迁移至sqlite
  *
  * question：1.单tab使用大概230m内存，添加一千个下载面板后内存会飚到450m左右，使用弱引用技术并提醒gc没有提升，使用对象池缓存面板的话不太好用，
  *             因为面板数量 波动过大。
