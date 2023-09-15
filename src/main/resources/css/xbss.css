@@ -1,0 +1,204 @@
+.split-pane {
+    /* 将背景透明*/
+    -fx-background-color: null;
+    -fx-background-insets: 0, 1;
+    -fx-padding: 1;
+}
+.split-pane > .split-pane-divider {
+    /* 分隔棒的宽度 */
+    -fx-padding: 0 1.5 0 1.5; /* 0 3 0 3 */
+}
+
+
+.tree-view {
+    /*-fx-background-color: -fx-box-border, -fx-control-inner-background;*/
+    /* 将背景透明*/
+    -fx-background-color: null;
+    -fx-background-insets: 0, 1;
+    /* There is some oddness if padding is in em values rather than pixels,
+       in particular, the left border of the control doesn't show. */
+    -fx-padding: 1; /* 0.083333em; */
+}
+
+.tree-view .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.tree-view .scroll-bar:vertical,
+.tree-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    /*-fx-opacity: 0;*/
+}
+.tree-view .scroll-bar .thumb {
+    -fx-background-color: rgba(227, 102, 102, 0.5);
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+/*两个小三角按钮不可见*/
+.tree-view .scroll-bar .increment-button,
+.tree-view .scroll-bar .decrement-button {
+    -fx-opacity: 0;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+.tree-view .scroll-bar:vertical .track,
+.tree-view .scroll-bar:horizontal .track {
+    -fx-background-color: transparent;
+    -fx-border-width: 0px;
+}
+.tree-view .scroll-bar:vertical .track:hover,
+.tree-view .scroll-bar:horizontal .track:hover {
+    -fx-background-color: #beeebe50;
+}
+.tree-view:focused {
+    /*-fx-background-color: -fx-focus-color,-fx-box-border,-fx-control-inner-background;*/
+    /*-fx-background-insets: -1.4, 0, 1;*/
+    /*-fx-background-radius: 1.4, 0, 0;*/
+    -fx-border-color: null;
+    /* There is some oddness if padding is in em values rather than pixels,
+       in particular, the left border of the control doesn't show. */
+    /*-fx-padding: 1; !* 0.083333em; *!*/
+}
+
+.tree-cell {
+    /* 将背景透明*/
+    -fx-background-color: null;
+    -fx-padding: 0.25em; /* 3 */
+    -fx-text-fill: -fx-text-inner-color;
+    -fx-indent: 10;
+}
+
+/*.tree-cell:hover {*/
+/*    -fx-background-color: rgba(112, 154, 161, 0.5);*/
+/*    !*-fx-background-color: #20c42050;*!*/
+/*    -fx-background-insets: 0, 1, 2;*/
+/*    -fx-background: -fx-accent;*/
+/*}*/
+
+.tree-cell:selected {
+    -fx-background-color: #20c42080;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background: -fx-accent;
+}
+
+
+
+/***********************************
+     TabPane 样式
+***********************************/
+.tab-pane .tab-header-area .tab-header-background{
+    -fx-background-color: #00EE0000;  /*设置头部区域背景透明*/
+}
+.tab-pane .tab-header-area .tab {
+    -fx-background-color:#00EE0000;
+    -fx-font-size: 16;
+    -fx-border-color: #00EE0000;
+}
+.tab-pane .tab-header-area .tab:selected{
+    -fx-background-color:#DDA0DD60;
+    -fx-font-size: 16;
+    -fx-border-color: #00EE0000;
+}
+.tab-pane .tab-header-area .tab:selected .focus-indicator{
+    -fx-border-width: 0;
+    -fx-border-radius: 4;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button:hover {
+    -fx-background-color: red;
+}
+
+/***********************************
+    ProgressBar 进度条样式
+***********************************/
+.cf-progress-bar,.memory,.cpu,.gpu,.file,.cf-warn-progress-bar,.cf-danger-progress-bar{
+    -fx-indeterminate-bar-length:70;
+    -fx-indeterminate-bar-animation-time:1.5;
+}
+.cf-progress-bar > .track,.cpu, > .track,.memory > .track,
+.gpu > .track,.cf-warn-progress-bar > .track,.cf-danger-progress-bar > .track{
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-border-color: grey;
+    -fx-border-radius: 0px;
+}
+.cf-progress-bar > .bar,.cpu > .bar,.file > .bar,.memory > .bar,
+.gpu > .bar,.cf-warn-progress-bar > .bar,.cf-danger-progress-bar > .bar{
+    -fx-pref-height: 15px;
+    -fx-background-insets: 1px;
+    -fx-background-radius: 0px;
+}
+.cpu > .bar {-fx-background-color:#8EE5EE;}
+.memory > .bar {-fx-background-color:#FFE4B5;}
+.gpu > .bar {-fx-background-color:#FFA500;}
+.file > .bar {-fx-background-color:#00FA9A;}
+
+
+/***********************************
+    ContextMenu 上下文菜单(只美化了一部分)
+***********************************/
+.context-menu,
+.context-menu .context-menu{
+    -fx-background-color:rgb(255,255,255);
+    -fx-background-radius:3px;
+    -fx-background-insets:0 0 0 1.5px;
+    /*-fx-padding:5px 0 5px 1.5px;*/
+    -fx-min-width:100px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0,0.5), 5.0,0, 0, 0);
+    -fx-font-size:14px;
+}
+.context-menu .menu-item{
+    -fx-pref-height:30px;
+}
+/*.context-menu .menu-item > .label{*/
+/*    -fx-text-fill: white;*/
+/*}*/
+.context-menu .menu-item:hover,
+.context-menu .menu-item:focused{
+    -fx-background-color: #eacf22;
+}
+/*.context-menu .menu-item:hover > .label,*/
+/*.context-menu .menu-item:focused > .label{*/
+/*    -fx-text-fill:black;*/
+/*}*/
+.context-menu .separator{
+    -fx-pref-height:10px;
+}
+/*.context-menu .menu-item > .right-container > .arrow{*/
+/*    -fx-background-color:text-color;*/
+/*}*/
+/**
+
+/***********************************
+    ScrollPane 滚动面板  使其透明,滚动条改变颜色、外观
+***********************************/
+.scroll-pane{
+    -fx-background-color:transparent;
+}
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-pane .scroll-bar:vertical,
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    /*-fx-opacity: 0;*/
+}
+.scroll-pane .scroll-bar .thumb {
+    -fx-background-color: rgba(227, 102, 102, 0.5);
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+/*两个小三角按钮不可见*/
+.scroll-pane .scroll-bar .increment-button,
+.scroll-pane .scroll-bar .decrement-button {
+    -fx-opacity: 0;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+.scroll-pane .scroll-bar:vertical .track,
+.scroll-pane .scroll-bar:horizontal .track {
+    -fx-background-color: transparent;
+    -fx-border-width: 0px;
+}
+.scroll-pane .scroll-bar:vertical .track:hover,
+.scroll-pane .scroll-bar:horizontal .track:hover {
+    -fx-background-color: #beeebe50;
+}
