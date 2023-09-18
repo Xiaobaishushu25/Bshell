@@ -5,8 +5,9 @@ ssh连接工具
 ![img_2.png](readme_img/img_2.png)
 ![img.png](readme_img/img.png)
 ![image](https://github.com/Xiaobaishushu25/Bshell/assets/76581880/4ef225f9-77f6-4fee-a451-04e929b1574d)
-![gif](readme_img/auot.gif)
 ![img_6.png](readme_img/img_6.png)
+下面是个gif，可以点击播放
+![gif](readme_img/auot.gif)
 ### 2. 文件相关操作
 
 ![img_1.png](readme_img/img_1.png)
@@ -62,3 +63,4 @@ b.命令输入行：<br>
 * 贡献您的想法建议
 * 与您的同学朋友同事分享Bshell
 * 如果您喜欢Bshell，可以考虑捐赠
+![pay](readme_img/pay.png)
