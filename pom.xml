@@ -198,6 +198,65 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>io.github.fvarrui</groupId>
+                <artifactId>javapackager</artifactId>
+                <version>1.7.0</version>
+                <configuration>
+                    <bundleJre>true</bundleJre>
+<!--                    <mainClass>cn.lichenfei.javapackage.Start</mainClass>-->
+                    <mainClass>xbss.APP</mainClass>
+                    <generateInstaller>false</generateInstaller>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundling-for-windows</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <platform>windows</platform>
+                            <!--生成压缩包-->
+                            <createZipball>true</createZipball>
+                            <!--vm参数-->
+                            <vmArgs>-XX:+UseZGC</vmArgs>
+                            <winConfig>
+                                <!--https://github.com/fvarrui/JavaPackager/blob/master/docs/windows-specific-properties.md-->
+                                <icoFile>${project.basedir}/src/main/resources/img/B.ico</icoFile>
+                            </winConfig>
+                        </configuration>
+                    </execution>
+                    <!--<execution>
+                        <id>bundling-for-linux</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <platform>linux</platform>
+                            <createTarball>true</createTarball>
+                            &lt;!&ndash;这里的jre应该是linux操作系统的&ndash;&gt;
+                            <jrePath>X:\\path\to\linux\jdk\jre</jrePath>
+                        </configuration>
+                    </execution>-->
+                    <!--<execution>
+                        <id>bundling-for-mac</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <platform>mac</platform>
+                            <createTarball>true</createTarball>
+                            &lt;!&ndash;这里的jre应该是macOs操作系统的&ndash;&gt;
+                            <jrePath>X:\\path\to\mac\jdk\jre</jrePath>
+                        </configuration>
+                    </execution>-->
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
