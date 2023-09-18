@@ -5,6 +5,7 @@ ssh连接工具
 ![img_2.png](readme_img/img_2.png)
 ![img.png](readme_img/img.png)
 ![image](https://github.com/Xiaobaishushu25/Bshell/assets/76581880/4ef225f9-77f6-4fee-a451-04e929b1574d)
+![gif](readme_img/auot.gif)
 ![img_6.png](readme_img/img_6.png)
 ### 2. 文件相关操作
 
