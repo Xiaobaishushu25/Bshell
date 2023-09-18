@@ -2,22 +2,22 @@
 ssh连接工具
 ## **界面展示**
 ### 1. 主界面
-![img_2.png](img_2.png)
-![img.png](img.png)
+![img_2.png](readme_img/img_2.png)
+![img.png](readme_img/img.png)
 ![image](https://github.com/Xiaobaishushu25/Bshell/assets/76581880/4ef225f9-77f6-4fee-a451-04e929b1574d)
-![img_6.png](img_6.png)
+![img_6.png](readme_img/img_6.png)
 ### 2. 文件相关操作
 
-![img_1.png](img_1.png)
+![img_1.png](readme_img/img_1.png)
 ### 3. 侧边栏
 
-#### * 下载中 
+####  下载
 
-![img_4.png](img_4.png)
-#### * 下载完成  
-![img_3.png](img_3.png)* 
+![img_4.png](readme_img/img_4.png)
+![img_3.png](readme_img/img_3.png)*
+
 #### 4. 设置（开发中）
-![img_5.png](img_5.png)
+![img_5.png](readme_img/img_5.png)
 ## **快捷键**
 
 1. 所有界面<br>
