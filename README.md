@@ -14,7 +14,7 @@ ssh连接工具
 ####  下载
 
 ![img_4.png](readme_img/img_4.png)
-![img_3.png](readme_img/img_3.png)*
+![img_3.png](readme_img/img_3.png)
 
 #### 4. 设置（开发中）
 ![img_5.png](readme_img/img_5.png)
