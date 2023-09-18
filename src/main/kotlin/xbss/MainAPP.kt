@@ -17,6 +17,7 @@ import javafx.stage.Stage
 import xbss.config.AppVersion
 import xbss.config.ImageIcon
 import xbss.config.InitSize
+import xbss.view.DonateStage
 import xbss.view.InitPane
 import xbss.view.MainWindow
 import xbss.view.SettingPane
@@ -101,7 +102,15 @@ class MainAPP:Application() {
             }
             stylesheets.add(this::class.java.getResource("/css/xbss.css").toExternalForm())
         }
-        val button = Button().apply {
+        val donate = Button().apply {
+            style = "-fx-background-color:null;-fx-cursor:hand"
+            graphic = ImageView(ImageIcon.DONATE24)
+            setOnAction {
+                val donateStage = DonateStage()
+                donateStage.start(Stage())
+            }
+        }
+        val setting = Button().apply {
             style = "-fx-background-color:null;-fx-cursor:hand"
             graphic = ImageView(ImageIcon.SET24)
             setOnAction {
@@ -109,8 +118,11 @@ class MainAPP:Application() {
                 settingPane.start(Stage())
             }
         }
-        val anchorPane = AnchorPane(tabPane, button)
-        AnchorPane.setRightAnchor(button,0.0)
+        val buttonGroup = HBox(0.0, donate, setting)
+//        val anchorPane = AnchorPane(tabPane,donate,setting)
+        val anchorPane = AnchorPane(tabPane,buttonGroup)
+//        AnchorPane.setRightAnchor(setting,0.0)
+        AnchorPane.setRightAnchor(buttonGroup,0.0)
         AnchorPane.setLeftAnchor(tabPane,0.0)
         stage.apply {
             val vBox = VBox(10.0, anchorPane)
