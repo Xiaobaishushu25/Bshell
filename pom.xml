@@ -116,6 +116,13 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>eawtstub</groupId>
+            <artifactId>eawtstub</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/eawtstub.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
