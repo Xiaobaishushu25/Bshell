@@ -31,8 +31,19 @@ Bshell是一个简洁易用的人性化的ssh客户端和终端模拟器。
 ![img_4.png](readme_img/img_4.png)
 ![img_3.png](readme_img/img_3.png)
 
-#### 4. 设置（开发中）
+### 4. 设置（开发中）
 ![img_5.png](readme_img/img_5.png)
+
+## **如何使用**
+
+### 下载
+
+githup：https://github.com/Xiaobaishushu25/Bshell/releases
+
+### 自行编译
+
+使用jdk21+Maven即可编译
+
 ## **快捷键**
 
 1. 所有界面<br>
