@@ -172,6 +172,7 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                                         val inputStream = it.get(item.path)
                                         val bytes = inputStream.readBytes() // 将 InputStream 中的数据缓存到内存中
                                         ShowImage(ImageView(Image(ByteArrayInputStream(bytes))), item.fileName).start(Stage())
+                                        inputStream.close()
                                     } catch (e: Exception) {
                                         println("捕获到异常 $e")
                                     } finally {
@@ -211,7 +212,7 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
         }
         treeView.selectionModel.selectionMode = SelectionMode.MULTIPLE
         treeView.setOnContextMenuRequested { it ->
-            treeAreaRightMenu?.let {tit -> tit.hide() }
+            treeAreaRightMenu?.hide()
             treeAreaRightMenu = TreeAreaRightMenu(this@TreeArea, treeView.selectionModel.selectedItems)
             treeAreaRightMenu!!.show(this@TreeArea, it.screenX + 3.0, it.screenY + 3.0)
         }
@@ -220,9 +221,9 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
              * 因为这个右键菜单只有在treeView失去焦点时才失去不符合习惯，强制消除一下
              */
             if (it.button!=MouseButton.SECONDARY)
-                treeAreaRightMenu?.let {tit -> tit.hide() }
+                treeAreaRightMenu?.hide()
         }
-        treeView.stylesheets.add(this::class.java.getResource("/css/xbss.css").toExternalForm())
+        treeView.stylesheets.add(this::class.java.getResource("/css/xbss.css")?.toExternalForm())
         treeView.prefWidth = InitSize.TREEVIEW_WIDTH
         treeView.prefHeight = InitSize.TEXTAREA_HEIGHT-30.0
         //AppVersion记录的bug9：打jar包后文件树多选操作不会即刻生效，只有滚动一下或者改变文件树大小后才会将选中item高亮
@@ -263,7 +264,7 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                 }
                 KeyCode.V -> {
                     if (keyEvent.isControlDown){
-                        TreeAreaRightMenu.waitToCopyPathList?.let {
+                        TreeAreaRightMenu.waitToCopyPathList.let {
                             val item = treeView.selectionModel.selectedItem
                             if (item.value.fileType==FileType.FOLDER){
                                 taskHandler.addCommandTask(TreeAreaRightMenu.waitToCopyPathList,item.value.path)

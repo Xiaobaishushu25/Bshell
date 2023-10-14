@@ -16,6 +16,7 @@ import xbss.server.mapper.table.Accounts
  * @describe :这样写全是顶层函数，在项目任何地方都可以访问数据库了，怎么控制可见性呢？
  */
 val database = Database.connect(DatabasePro.URL, user = DatabasePro.USER, password = DatabasePro.PASSWORD)
+
 val Database.accounts
     get() = this.sequenceOf(Accounts)
 val Database.historys

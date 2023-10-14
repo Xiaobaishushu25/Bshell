@@ -38,22 +38,26 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>19</version>
+            <!--            <version>19</version>-->
+            <version>21</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
-            <version>19</version>
+            <!--            <version>19</version>-->
+            <version>21</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
-            <version>19</version>
+            <!--            <version>19</version>-->
+            <version>21</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
-            <version>20</version>
+            <!--            <version>20</version>-->
+            <version>21</version>
         </dependency>
         <!--h2数据库-->
         <dependency>
@@ -115,6 +119,14 @@
             <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>eawtstub</groupId>
+            <artifactId>eawtstub</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/eawtstub.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -205,6 +217,7 @@
                 <version>1.7.0</version>
                 <configuration>
                     <bundleJre>true</bundleJre>
+                    <jrePath>F:\Environment\Java\JDK\Open\jdk-21</jrePath>
 <!--                    <mainClass>cn.lichenfei.javapackage.Start</mainClass>-->
                     <mainClass>xbss.APP</mainClass>
                     <generateInstaller>false</generateInstaller>
@@ -228,6 +241,7 @@
                             </winConfig>
                         </configuration>
                     </execution>
+
                     <!--<execution>
                         <id>bundling-for-linux</id>
                         <phase>package</phase>
