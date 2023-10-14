@@ -36,15 +36,11 @@ class DonateStage:Application() {
         vBox.prefWidth = 577.0
         stage.apply {
             scene = Scene(vBox).apply {
-                stylesheets.add(this::class.java.getResource("/css/setting.css").toExternalForm())
+                stylesheets.add(this::class.java.getResource("/css/setting.css")?.toExternalForm())
             }
             icons.add(ImageIcon.DONATE24)
             title = "捐赠（非常感谢您的支持！）"
             show()
         }
     }
-}
-
-fun main() {
-    Application.launch(DonateStage::class.java)
 }

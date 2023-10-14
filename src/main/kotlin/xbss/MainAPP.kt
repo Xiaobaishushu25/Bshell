@@ -52,22 +52,6 @@ class MainAPP:Application() {
         val initTab = Tab("新标签页")
         initTab.content = InitPane(initTab)
         nowSelectTab = initTab
-//        val addButton = Button().apply {
-//            translateY = 4.0
-//            style = "-fx-cursor:hand"
-//            style = "-fx-background-color:null"
-//            background = Background(BackgroundImage(
-//                ImageIcon.ADD20,
-//                BackgroundRepeat.NO_REPEAT,  // 图片重复方式
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundPosition.DEFAULT,
-//                BackgroundSize.DEFAULT)
-//            )
-//            addEventFilter(MouseEvent.MOUSE_CLICKED) {
-//                toAddTab()
-//                it.consume()
-//            }
-//        }
         addTab = Tab().apply {
             isClosable = false
 //            graphic = addButton
@@ -100,7 +84,7 @@ class MainAPP:Application() {
                     }
                 }
             }
-            stylesheets.add(this::class.java.getResource("/css/xbss.css").toExternalForm())
+            stylesheets.add(this::class.java.getResource("/css/xbss.css")?.toExternalForm())
         }
         val donate = Button().apply {
             style = "-fx-background-color:null;-fx-cursor:hand"
@@ -129,7 +113,7 @@ class MainAPP:Application() {
             scene = Scene(vBox,InitSize.APP_WIDTH,840.0)
             icons.add(ImageIcon.B)
             width = InitSize.STAGE_WIDTH
-            title = "BShell ${AppVersion.version}"
+            title = "BShell ${AppVersion.VERSION}"
             show()
             setOnCloseRequest {
                 service.shutdown()
@@ -139,7 +123,14 @@ class MainAPP:Application() {
                 exitProcess(0)
             }
         }
+        stage.toFront()
         registerShortCut()
+        initSizeListener()
+    }
+
+    private fun initSizeListener() {
+        tabPane.prefWidthProperty().bind(stage.scene.widthProperty())
+        tabPane.prefHeightProperty().bind(stage.scene.heightProperty())
     }
 
     /**
