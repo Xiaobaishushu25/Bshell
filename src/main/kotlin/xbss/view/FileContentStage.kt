@@ -50,8 +50,8 @@ class FileContentStage(private val item: LsTreeItem.FileItem, private val ssh: S
     private var pattern: Pattern? = null
     private var oriContent: String //初始内容
     private var oriLines: List<String>
-    private val sameFlag = SimpleBooleanProperty(true)
-    private val bytes: ByteArray
+    private val sameFlag = SimpleBooleanProperty(true) //内容是否改变
+    private var bytes: ByteArray //初试内容字节数组
     private val green: Paint = Paint.valueOf("#00FF00")
     private val orange: Paint = Paint.valueOf("#FFA500")
 
@@ -106,10 +106,13 @@ class FileContentStage(private val item: LsTreeItem.FileItem, private val ssh: S
             sftp.put(byteInputStream, item.path) //这里put应该是同步的吧
             oriContent = text
             oriLines = oriContent.lines()
+            bytes = byteInputStream.readAllBytes()
+            byteInputStream.close()
             codeArea.clear()
             codeArea.replaceText(0, 0, oriContent)
             sameFlag.value = true
         } catch (e: Exception) {
+            byteInputStream.close()
             GlobalLog.writeErrorLog("上传出错 $e")
         }
     }
@@ -209,6 +212,9 @@ class FileContentStage(private val item: LsTreeItem.FileItem, private val ssh: S
             }
     }
 
+    /**
+     * 计算内容是否相同
+     */
     private fun compareContent(newContent: String): Boolean {
         return DiffUtils.diff(oriLines, newContent.lines()).deltas.isEmpty()
     }
@@ -328,7 +334,6 @@ class FileContentStage(private val item: LsTreeItem.FileItem, private val ssh: S
         private fun getKeywordPattern(): String {
             return "\\b(" + this.KEYWORDS.joinToString("|") + ")\\b"
         }
-
         fun getPattern(): Pattern {
             return Pattern.compile(
                 "(?<KEYWORD>" + this.getKeywordPattern() + ")"
