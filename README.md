@@ -24,14 +24,26 @@ Bshell是一个简洁易用的人性化的ssh客户端和终端模拟器。
 ### 2. 文件相关操作
 
 ![img_1.png](readme_img/img_1.png)
-### 3. 侧边栏
+
+### 3. 在线查看、编辑
+
+#### 图片
+
+![img_9.png](readme_img/img_9.png)
+
+#### 文档
+
+![img_7.png](readme_img/img_7.png)
+![img_8.png](readme_img/img_8.png)
+
+### 4. 侧边栏
 
 ####  下载
 
 ![img_4.png](readme_img/img_4.png)
 ![img_3.png](readme_img/img_3.png)
 
-### 4. 设置（开发中）
+### 5. 设置（开发中）
 ![img_5.png](readme_img/img_5.png)
 
 ## **如何使用**

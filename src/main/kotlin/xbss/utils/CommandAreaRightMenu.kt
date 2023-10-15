@@ -30,7 +30,7 @@ class CommandAreaRightMenu(): ContextMenu() {
     }
     private fun initItem(){
         create = MenuItem().apply{
-            graphic = HBox(10.0,ImageView(ImageIcon.CREATE), getBlackTextLabel("新建文件夹"))
+            graphic = HBox(10.0, ImageView(ImageIcon.CREATEDIR), getBlackTextLabel("新建文件夹"))
             setOnAction {
             }
         }

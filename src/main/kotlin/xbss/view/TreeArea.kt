@@ -154,6 +154,7 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                         val imageView = ImageView()
                         when (item.fileType) {
                             FileType.PY -> imageView.image = ImageIcon.PY
+                            FileType.RS -> imageView.image = ImageIcon.RUST
                             FileType.IMG -> imageView.image = ImageIcon.IMAGE
                             FileType.FOLDER -> imageView.image = ImageIcon.FOLDER
                             FileType.FILE -> imageView.image = ImageIcon.FILE
@@ -179,7 +180,20 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                                         ssh.releaseChannel(it)
                                     }
                                 }
-                            }else if (item.fileType != FileType.FOLDER && item.fileType != FileType.DENY){
+                            } else if (it.clickCount == 2 && (item.fileType == FileType.IMG
+                                        || item.fileType == FileType.PY
+                                        || item.fileType == FileType.JAVA
+                                        || item.fileType == FileType.RS
+                                        || item.fileType == FileType.GO)
+                            ) {
+                                val sftp = ssh.getChSftpOrNull()
+                                sftp?.let {
+                                    val fileContentStage = FileContentStage(item, ssh, it)
+                                    fileContentStage.start(Stage())
+                                } ?: {
+                                    //todo 弹出dialog提示没有多余的通道
+                                }
+                            } else if (item.fileType != FileType.FOLDER && item.fileType != FileType.DENY) {
                                 //todo ：要不要加个缓存预览功能
                             }
                         }
@@ -313,7 +327,6 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
             }
         }else{
             item.loadComplete.addListener { _,_,_ ->
-//                item.children.find { it.value.contains(path.first()) }?.let {
                 item.children.find { it.value.path.contains(path.first()) }?.let {
                     Platform.runLater{
                         treeView.selectionModel.clearSelection()

@@ -118,6 +118,10 @@ class LsTreeItem(val path: String):TreeItem<LsTreeItem.FileItem>(){
                 "txt" -> this.value = FileItem(path,fileName,FileType.TXT)
                 "md" -> this.value = FileItem(path,fileName,FileType.MD)
                 "mp4" -> this.value = FileItem(path,fileName,FileType.VIDEO)
+                "rs" -> this.value = FileItem(path, fileName, FileType.RS)
+                "go" -> this.value = FileItem(path, fileName, FileType.GO)
+                "java" -> this.value = FileItem(path, fileName, FileType.JAVA)
+                "kt" -> this.value = FileItem(path, fileName, FileType.JAVA)
                 "deny" -> this.value = FileItem(path,fileName.split(".").first(),FileType.DENY)
                 else -> this.value = FileItem(path,fileName,FileType.FILE)
             }

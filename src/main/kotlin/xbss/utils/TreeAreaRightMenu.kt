@@ -10,7 +10,6 @@ import javafx.scene.layout.HBox
 import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
 import javafx.stage.Stage
-import xbss.config.AppData
 import xbss.config.FileType
 import xbss.config.ImageIcon
 import xbss.config.Setting
@@ -45,7 +44,12 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
     /**
      * 仅支持文件夹
      */
-    private lateinit var create:MenuItem
+    private lateinit var createDir: MenuItem
+
+    /**
+     * 仅支持文件夹
+     */
+    private lateinit var createFile: MenuItem
     /**
      * 仅支持文件夹、文件
      */
@@ -104,12 +108,35 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
     }
     private fun initMenu(){
         initItem()
-        if (!isMultiple)
-            this.items.addAll(create,reName,cdIInto,SeparatorMenuItem(),copyName,copyFile,pasteFile,SeparatorMenuItem(),down,reSave,SeparatorMenuItem(),upFile,upDir,SeparatorMenuItem(),delete)
-        else{
+//        if (!isMultiple)
+//            this.items.addAll(createDir,reName,cdIInto,SeparatorMenuItem(),copyName,copyFile,pasteFile,SeparatorMenuItem(),down,reSave,SeparatorMenuItem(),upFile,upDir,SeparatorMenuItem(),delete)
+//        else{
+//            initTip()
+//            this.items.addAll(tip,createDir,reName,cdIInto,SeparatorMenuItem(),copyName,copyFile,pasteFile,SeparatorMenuItem(),down,reSave,SeparatorMenuItem(),upFile,upDir,SeparatorMenuItem(),delete)
+//        }
+        if (isMultiple) {
             initTip()
-            this.items.addAll(tip,create,reName,cdIInto,SeparatorMenuItem(),copyName,copyFile,pasteFile,SeparatorMenuItem(),down,reSave,SeparatorMenuItem(),upFile,upDir,SeparatorMenuItem(),delete)
+            this.items.add(tip)
         }
+        this.items.addAll(
+            createDir,
+            createFile,
+            reName,
+            cdIInto,
+            SeparatorMenuItem(),
+            copyName,
+            copyFile,
+            pasteFile,
+            SeparatorMenuItem(),
+            down,
+            reSave,
+            SeparatorMenuItem(),
+            upFile,
+            upDir,
+            SeparatorMenuItem(),
+            delete
+        )
+
     }
     private fun initTip(){
         tip = MenuItem().apply{
@@ -122,14 +149,29 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
      * 初始化所有基础item
      */
     private fun initItem(){
-        create = MenuItem().apply{
-            graphic = getHBox(ImageView(ImageIcon.CREATE), getBlackTextLabel("新建文件夹"))
+        createDir = MenuItem().apply {
+            graphic = getHBox(ImageView(ImageIcon.CREATEDIR), getBlackTextLabel("新建文件夹"))
             setSupport(SupportType.FOLDER)
             setOnAction {
                 PopName().apply {
                     textObservable.addListener { _,_,newValue ->
                         if (newValue.isNotEmpty()){
                             ssh.execCommand("mkdir "+item!!.path+"/"+newValue)
+                            treeArea.refreshItem()
+                        }
+                    }
+                    start(Stage())
+                }
+            }
+        }
+        createFile = MenuItem().apply {
+            graphic = getHBox(ImageView(ImageIcon.CREATEFILE), getBlackTextLabel("新建文件"))
+            setSupport(SupportType.FOLDER)
+            setOnAction {
+                PopName().apply {
+                    textObservable.addListener { _, _, newValue ->
+                        if (newValue.isNotEmpty()) {
+                            ssh.execCommand("touch " + item!!.path + "/" + newValue)
                             treeArea.refreshItem()
                         }
                     }

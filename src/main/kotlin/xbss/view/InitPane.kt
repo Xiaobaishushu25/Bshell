@@ -252,6 +252,6 @@ class InitPane(private val tab: Tab):AnchorPane() {
         this.text = "" //标签页名用label写了，就不需要了
     }
     private fun closeTab(){
-        mainWindow?.let { it.closeAll() }
+        mainWindow?.closeAll()
     }
 }

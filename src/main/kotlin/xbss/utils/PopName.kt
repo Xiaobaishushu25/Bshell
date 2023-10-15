@@ -20,6 +20,7 @@ import xbss.config.ImageIcon
  * @create 2023-03-29-20:20
  * @version  1.0
  * @describe :新建文件夹、重命名文件夹弹出的窗口
+ * todo 要不要加个回车确认的功能？
  */
 class PopName(private val olName:String?=null):Application() {
     val textObservable = SimpleStringProperty(null) //在外面监听改变
@@ -51,7 +52,7 @@ class PopName(private val olName:String?=null):Application() {
             ).apply { padding = Insets(50.0,20.0,20.0,20.0) },
                 400.0,160.0
             )
-            title = olName?.let { "重命名-$olName" }?:run{ "输入文件夹名" }
+            title = olName?.let { "重命名-$olName" } ?: run { "输入名称" }
             initModality(Modality.APPLICATION_MODAL)
             icons.add(ImageIcon.B)
             show()

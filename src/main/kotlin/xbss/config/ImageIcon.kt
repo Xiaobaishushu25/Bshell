@@ -11,6 +11,7 @@ import javafx.scene.image.Image
 object ImageIcon {
     val B = Image(Image::class.java.getResourceAsStream("/img/B.jpg"))
     val PY = Image(Image::class.java.getResourceAsStream("/img/Python.png"))
+    val RUST = Image(Image::class.java.getResourceAsStream("/img/rust16.png"))
     val IMAGE = Image(Image::class.java.getResourceAsStream("/img/image.png"))
 //    val folder = Image(Image::class.java.getResourceAsStream("/img/文件夹16.png"))
     val FOLDER = Image(Image::class.java.getResourceAsStream("/img/文件夹16.png"))
@@ -32,7 +33,8 @@ object ImageIcon {
     val COPY24 = Image(Image::class.java.getResourceAsStream("/img/copy24.png"))
     val UPDATE = Image(Image::class.java.getResourceAsStream("/img/update.png"))
     val UPTO = Image(Image::class.java.getResourceAsStream("/img/upTo.png"))
-    val CREATE = Image(Image::class.java.getResourceAsStream("/img/create16.png"))
+    val CREATEDIR = Image(Image::class.java.getResourceAsStream("/img/createDir16.png"))
+    val CREATEFILE = Image(Image::class.java.getResourceAsStream("/img/createFile16.png"))
     val DELETE16 = Image(Image::class.java.getResourceAsStream("/img/delete16.png"))
     val DELETE24 = Image(Image::class.java.getResourceAsStream("/img/delete24.png"))
     val RENAME16 = Image(Image::class.java.getResourceAsStream("/img/rename16.png"))

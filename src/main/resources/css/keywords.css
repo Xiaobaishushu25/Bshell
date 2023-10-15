@@ -1,0 +1,71 @@
+
+.keyword {
+    -fx-fill: #d7540d;
+    -fx-font-weight: bold;
+}
+
+.semicolon {
+    -fx-font-weight: bold;
+}
+
+.paren {
+    -fx-fill: #65da68;
+    -fx-font-weight: bold;
+}
+
+.bracket {
+    -fx-fill: darkgreen;
+    -fx-font-weight: bold;
+}
+
+.brace {
+    -fx-fill: teal;
+    -fx-font-weight: bold;
+}
+
+.string {
+    -fx-fill: blue;
+}
+
+.comment {
+    -fx-fill: cadetblue;
+}
+
+.paragraph-box:has-caret {
+    -fx-background-color: #f2f9fc;
+}
+
+.choice-box {
+    -fx-background-color: transparent;
+    /*-fx-padding: 0 15px 0 15px;*/
+    /*-fx-pref-height: 32px;*/
+    /*-fx-pref-width: 200px;*/
+    -fx-font-size: 14px;
+    -fx-font-weight: 400;
+    -fx-border-color: #D4D7DE;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-background-insets: 0;
+    -fx-text-fill: #303133;
+}
+
+.choice-box:hover {
+    -fx-cursor: hand;
+}
+
+.choice-box:focused {
+    -fx-border-color: #5C80EF;
+}
+
+.choice-box .choice-box-popup .list-view {
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 3px 0 3px 0;
+    -fx-background-color: rgb(255, 255, 255);
+    -fx-border-color: #D4D7DE;
+}
+
+.choice-box .choice-box-popup .list-cell:hover, .choice-box .choice-box-popup .list-cell:focused {
+    -fx-text-fill: #303133;
+    -fx-background-color: derive(#5C80EF, 95%);
+}
