@@ -121,7 +121,7 @@ class LsTreeItem(val path: String):TreeItem<LsTreeItem.FileItem>(){
                 "rs" -> this.value = FileItem(path, fileName, FileType.RS)
                 "go" -> this.value = FileItem(path, fileName, FileType.GO)
                 "java" -> this.value = FileItem(path, fileName, FileType.JAVA)
-                "kt" -> this.value = FileItem(path, fileName, FileType.JAVA)
+                "kt" -> this.value = FileItem(path, fileName, FileType.KOTLIN)
                 "deny" -> this.value = FileItem(path,fileName.split(".").first(),FileType.DENY)
                 else -> this.value = FileItem(path,fileName,FileType.FILE)
             }

@@ -3,6 +3,7 @@ package xbss.ssh
 import com.jcraft.jsch.ChannelSftp
 import com.jcraft.jsch.Session
 import javafx.beans.property.SimpleIntegerProperty
+import xbss.config.GlobalLog
 
 /**
  * @author  Xbss
@@ -51,7 +52,7 @@ class SftpChannelPool(private val session: Session) {
             }
         }
 //        isAvailable.value = false
-        println("没找到空闲的通道")
+        GlobalLog.writeErrorLog("没找到空闲的sftp通道，尝试创建sftp通道")
         return addNewChannel()
     }
 
@@ -72,13 +73,19 @@ class SftpChannelPool(private val session: Session) {
         }
 //        isAvailable.value = true
     }
-    private fun addNewChannel():ChannelSftp{
+
+    private fun addNewChannel(): ChannelSftp? {
         val channel = session.openChannel("sftp") as ChannelSftp
-        channel.connect()
-        channel.setFilenameEncoding("UTF-8")
-        channels.add(SftpChannelWrapper(channel))
-        sftpAvailableNumP.value++
-        return channel
+        return try {
+            channel.connect()
+            channel.setFilenameEncoding("UTF-8")
+            channels.add(SftpChannelWrapper(channel))
+            sftpAvailableNumP.value++
+            channel
+        } catch (e: Exception) {
+            GlobalLog.writeErrorLog("创建sftp通道失败")
+            null
+        }
     }
     private fun getAvailableNum():Int{
 //        var i = 0

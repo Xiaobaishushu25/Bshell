@@ -77,6 +77,7 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                 val content = ClipboardContent()
                 content.putString(pathIndication.text)
                 Clipboard.getSystemClipboard().setContent(content)
+                treeView.scrollTo(treeView.selectionModel.selectedIndex)
             }
         }
         val up = Button().apply {
@@ -155,6 +156,9 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                         when (item.fileType) {
                             FileType.PY -> imageView.image = ImageIcon.PY
                             FileType.RS -> imageView.image = ImageIcon.RUST
+                            FileType.JAVA -> imageView.image = ImageIcon.JAVA
+                            FileType.KOTLIN -> imageView.image = ImageIcon.KT
+                            FileType.GO -> imageView.image = ImageIcon.GO
                             FileType.IMG -> imageView.image = ImageIcon.IMAGE
                             FileType.FOLDER -> imageView.image = ImageIcon.FOLDER
                             FileType.FILE -> imageView.image = ImageIcon.FILE
@@ -162,40 +166,73 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                             FileType.MD -> imageView.image = ImageIcon.MD
                             FileType.VIDEO -> imageView.image = ImageIcon.VIDEO
                             FileType.DENY -> imageView.image = ImageIcon.DENY
-                            else -> {}
-                        }
-
-                        this.setOnMouseClicked {
-                            if (it.clickCount == 2 && item.fileType == FileType.IMG) {
-                                val sftp = ssh.getChSftpOrNull()
-                                sftp?.let {
-                                    try {
-                                        val inputStream = it.get(item.path)
-                                        val bytes = inputStream.readBytes() // 将 InputStream 中的数据缓存到内存中
-                                        ShowImage(ImageView(Image(ByteArrayInputStream(bytes))), item.fileName).start(Stage())
-                                        inputStream.close()
-                                    } catch (e: Exception) {
-                                        println("捕获到异常 $e")
-                                    } finally {
-                                        ssh.releaseChannel(it)
-                                    }
-                                }
-                            } else if (it.clickCount == 2 && (item.fileType == FileType.IMG
-                                        || item.fileType == FileType.PY
-                                        || item.fileType == FileType.JAVA
-                                        || item.fileType == FileType.RS
-                                        || item.fileType == FileType.GO)
-                            ) {
-                                val sftp = ssh.getChSftpOrNull()
-                                sftp?.let {
-                                    val fileContentStage = FileContentStage(item, ssh, it)
-                                    fileContentStage.start(Stage())
-                                } ?: {
-                                    //todo 弹出dialog提示没有多余的通道
-                                }
-                            } else if (item.fileType != FileType.FOLDER && item.fileType != FileType.DENY) {
-                                //todo ：要不要加个缓存预览功能
+                            else -> {
+                                imageView.image = ImageIcon.FILE
                             }
+                        }
+                        this.setOnMouseClicked {
+                            if (it.clickCount == 2) {
+                                when (item.fileType) {
+                                    FileType.IMG -> {
+                                        val sftp = ssh.getChSftpOrNull()
+                                        sftp?.let {
+                                            try {
+                                                val inputStream = it.get(item.path)
+                                                val bytes = inputStream.readBytes() // 将 InputStream 中的数据缓存到内存中
+                                                ShowImage(
+                                                    ImageView(Image(ByteArrayInputStream(bytes))),
+                                                    item.fileName
+                                                ).start(Stage())
+                                                inputStream.close()
+                                            } catch (e: Exception) {
+                                                println("捕获到异常 $e")
+                                            } finally {
+                                                ssh.releaseChannel(it)
+                                            }
+                                        }
+
+                                    }
+                                    //下面这些双击用文本编辑器打开
+                                    FileType.TXT, FileType.RS, FileType.JAVA, FileType.GO, FileType.PY, FileType.MD, FileType.KOTLIN -> {
+                                        val sftp = ssh.getChSftpOrNull()
+                                        sftp?.let {
+                                            val fileContentStage = FileContentStage(item, ssh, it)
+                                            fileContentStage.start(Stage())
+                                        } ?: {
+                                            //todo 弹出dialog提示没有多余的通道
+                                        }
+                                    }
+
+                                    else -> {}
+                                }
+                            }
+//                            if (it.clickCount == 2 && item.fileType == FileType.IMG) {
+//                                val sftp = ssh.getChSftpOrNull()
+//                                sftp?.let {
+//                                    try {
+//                                        val inputStream = it.get(item.path)
+//                                        val bytes = inputStream.readBytes() // 将 InputStream 中的数据缓存到内存中
+//                                        ShowImage(ImageView(Image(ByteArrayInputStream(bytes))), item.fileName).start(Stage())
+//                                        inputStream.close()
+//                                    } catch (e: Exception) {
+//                                        println("捕获到异常 $e")
+//                                    } finally {
+//                                        ssh.releaseChannel(it)
+//                                    }
+//                                }
+//                            } else if (it.clickCount == 2 && (item.fileType != FileType.IMG
+//                                        || item.fileType == FileType.PY
+//                                        || item.fileType == FileType.JAVA
+//                                        || item.fileType == FileType.RS
+//                                        || item.fileType == FileType.GO)
+//                            ) {
+//                                val sftp = ssh.getChSftpOrNull()
+//                                sftp?.let {
+//                                    val fileContentStage = FileContentStage(item, ssh, it)
+//                                    fileContentStage.start(Stage())
+//                                } ?: {
+//                                }
+//                            }
                         }
                         HBox(5.0, imageView, label).apply {
                             tooltip = Tooltip(item.fileName).apply {
@@ -240,10 +277,10 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
         treeView.stylesheets.add(this::class.java.getResource("/css/xbss.css")?.toExternalForm())
         treeView.prefWidth = InitSize.TREEVIEW_WIDTH
         treeView.prefHeight = InitSize.TEXTAREA_HEIGHT-30.0
-        //AppVersion记录的bug9：打jar包后文件树多选操作不会即刻生效，只有滚动一下或者改变文件树大小后才会将选中item高亮
-        treeView.selectionModel.selectedItemProperty().addListener { _,_,_ ->
-            treeView.refresh()
-        }
+        //todo AppVersion记录的bug9：打jar包后文件树多选操作不会即刻生效，只有滚动一下或者改变文件树大小后才会将选中item高亮
+//        treeView.selectionModel.selectedItemProperty().addListener { _,_,_ ->
+//            treeView.refresh()
+//        }
         registerShortCut()
         // 用反射监听item左边的小三角是否被点击，觉得不是很有必要，不写了
 //        val behavior = treeView.skinProperty().addListener { _,_,newSkin ->
@@ -289,12 +326,6 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                 else -> {}
             }
         }
-//        treeView.setOnKeyReleased {
-//            when(it.code){
-//                KeyCode.CONTROL -> ctrlIsDown = false
-//                else -> {}
-//            }
-//        }
     }
 
     /**
@@ -309,39 +340,46 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
 
     /**
      *  真正的递归展开函数
-     *
+     *  todo: bug10:应该是在v0.5.3后，之前版本的逻辑是在每个递归找到指定目录后自动滚动到指定目录，bug表现为滚动完成到指定目录后，会朝下滚动若干距离。
+     *  可能是fx21的问题？
+     *  优化了一下滚动逻辑，现在v0.5.5，不会在每个递归都滚动到指定目录，只在递归结束时滚动到focus目录。（这并没有修复此bug）
+     *  修复：在递归结束时使用fx线程，休眠1s后在滚动到focus目录。（试过0.5s不行）
      * @param item
      * @param path
      * @return
      */
-    private fun expandItemS(item: LsTreeItem, path:MutableList<String>):TreeItem<String>?{
-        if (path.isEmpty())
-            return null
-        if (item.loadComplete.value){
-//            item.children.find { it.value.contains(path.first()) }?.let {
+    private fun expandItemS(item: LsTreeItem, path: MutableList<String>) {
+        //退出条件
+        if (path.isEmpty()) {
+            Platform.runLater { //bug10
+                Thread.sleep(1000) //（试过0.5s不行）
+                treeView.scrollTo(treeView.selectionModel.selectedIndex)
+            }
+            return
+        }
+        if (item.loadComplete.value) {//如果该结点已加载完成（一般都是未加载完成）
             item.children.find { it.value.path.contains(path.first()) }?.let {
                 it.isExpanded =true
-//                println("找到了${path.first()}")
                 path.removeFirst()
                 expandItemS(it as LsTreeItem,path)
             }
         }else{
             item.loadComplete.addListener { _,_,_ ->
                 item.children.find { it.value.path.contains(path.first()) }?.let {
-                    Platform.runLater{
+                    Platform.runLater {//由于外面不是fx线程，要转移一下
                         treeView.selectionModel.clearSelection()
                         treeView.selectionModel.select(it)
                         treeView.focusModel.focus(treeView.selectionModel.selectedIndex)
-                        treeView.scrollTo(treeView.selectionModel.selectedIndex)
+//                        treeView.scrollTo(treeView.selectionModel.selectedIndex)
+                        it.isExpanded = true
                     }
-                    it.isExpanded =true
+//                    it.isExpanded =true
 //                    println("找到了${path.first()},展开了${it.value}")
                     path.removeFirst()
                     expandItemS(it as LsTreeItem,path)
                 }
             }
         }
-        return null
     }
 
 

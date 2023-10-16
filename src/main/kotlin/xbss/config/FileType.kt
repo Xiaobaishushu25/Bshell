@@ -7,5 +7,5 @@ package xbss.config
  * @describe :文件类型
  */
 enum class FileType {
-    IMG, FILE, FOLDER, TXT, MD, VIDEO, DENY, PY, JAVA, RS, GO
+    IMG, FILE, FOLDER, TXT, MD, VIDEO, DENY, PY, JAVA, KOTLIN, RS, GO
 }
