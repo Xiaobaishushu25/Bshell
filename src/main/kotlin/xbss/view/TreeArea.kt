@@ -277,7 +277,8 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
         treeView.stylesheets.add(this::class.java.getResource("/css/xbss.css")?.toExternalForm())
         treeView.prefWidth = InitSize.TREEVIEW_WIDTH
         treeView.prefHeight = InitSize.TEXTAREA_HEIGHT-30.0
-        //todo AppVersion记录的bug9：打jar包后文件树多选操作不会即刻生效，只有滚动一下或者改变文件树大小后才会将选中item高亮
+        // AppVersion记录的bug9：打jar包后文件树多选操作不会即刻生效，只有滚动一下或者改变文件树大小后才会将选中item高亮
+        // v0.5.5：不使用jar包，使用javapackage打包，未发现此问题，将相关代码注掉了
 //        treeView.selectionModel.selectedItemProperty().addListener { _,_,_ ->
 //            treeView.refresh()
 //        }
@@ -299,12 +300,9 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
 //        }
     }
     private fun registerShortCut(){
-//        var ctrlIsDown = false
         treeView.setOnKeyPressed { keyEvent ->
             when(keyEvent.code){
-//                KeyCode.CONTROL -> ctrlIsDown = true
                 KeyCode.C -> {
-//                    if (ctrlIsDown){
                     if (keyEvent.isControlDown&&!keyEvent.isShiftDown){
                         TreeAreaRightMenu.waitToCopyPathList = treeView.selectionModel.selectedItems.map { it.value.path }
                     }else if (keyEvent.isControlDown&&keyEvent.isShiftDown){
