@@ -277,6 +277,14 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
                                 }
                             }
                         }
+                    } else {
+                        if (!isMultiple) {
+                            taskHandler.addIOTask(FileIOPane.FileIOType.DOWN, item!!.path, path)
+                        } else {
+                            for (treeItem in itemList!!) {
+                                taskHandler.addIOTask(FileIOPane.FileIOType.DOWN, treeItem.value.path, path)
+                            }
+                        }
                     }
                 }
 //                if (!isMultiple) {
@@ -298,11 +306,14 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
                             initialDirectory = this
                     }
                     showDialog(treeArea.scene.window)?.let {
+                        val newPath = it.absolutePath
+                        if (newPath != Setting.reSavePathP.value)
+                            Setting.setNewReSavePath(newPath)
                         if (!isMultiple){
-                            taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,item!!.path,it.absolutePath)
+                            taskHandler.addIOTask(FileIOPane.FileIOType.DOWN, item!!.path, newPath)
                         }else{
                             for (item in itemList!!){
-                                taskHandler.addIOTask(FileIOPane.FileIOType.DOWN,item.value.path,it.absolutePath)
+                                taskHandler.addIOTask(FileIOPane.FileIOType.DOWN, item.value.path, newPath)
                             }
                         }
                     }

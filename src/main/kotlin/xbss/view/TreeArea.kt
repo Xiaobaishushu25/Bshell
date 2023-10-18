@@ -67,6 +67,9 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
         val copy = Button().apply {
             translateY = 3.0
             style = "-fx-cursor:hand"
+            tooltip = Tooltip("复制当前路径").apply {
+                style = "-fx-background-color: #FFFACD;-fx-text-fill:black;-fx-font-size: 13"
+            }
             background = Background(BackgroundImage(
                 ImageIcon.COPY16,
                 BackgroundRepeat.NO_REPEAT,
@@ -83,6 +86,9 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
         val up = Button().apply {
             translateY = 3.0
             style = "-fx-cursor:hand"
+            tooltip = Tooltip("返回父目录").apply {
+                style = "-fx-background-color: #FFFACD;-fx-text-fill:black;-fx-font-size: 13"
+            }
             background = Background(BackgroundImage(
                 ImageIcon.UPTO,
                 BackgroundRepeat.NO_REPEAT,
@@ -100,6 +106,8 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
             translateY = 3.0
             translateX = -3.0
             style = "-fx-cursor:hand"
+            tooltip =
+                Tooltip("更新").apply { style = "-fx-background-color: #FFFACD;-fx-text-fill:black;-fx-font-size: 13" }
             background = Background(BackgroundImage(
                 ImageIcon.UPDATE,
                 BackgroundRepeat.NO_REPEAT,

@@ -10,12 +10,14 @@ import java.sql.DriverManager
  * @describe
  */
 object DatabasePro {
-    val URL = "jdbc:h2:"+System.getProperty("user.dir")+"\\database\\data"
+    val userPath: String = System.getProperty("user.dir")
+    val URL = "jdbc:h2:$userPath${File.separator}database${File.separator}data"
     const val USER = "root"
     const val PASSWORD = "abc123"
 
+
     init {
-        if (!File(System.getProperty("user.dir") + "\\database\\data.mv.db").exists()) {
+        if (!File("$userPath${File.separator}database${File.separator}data.mv.db").exists()) {
             GlobalLog.writeInfoLog("数据库文件不存在，创建数据库.")
             val connection = DriverManager.getConnection(URL, USER, PASSWORD)
             val statement = connection.createStatement()
@@ -24,5 +26,29 @@ object DatabasePro {
             statement.close()
             connection.close()
         }
+//        val configFile = File("$userPath${File.separator}database${File.separator}config")
+//        if (!configFile.exists()) {
+//            val defaultDirPath = "${userPath}${File.separator}download"
+//            val downDir = File(defaultDirPath)
+//            if (!downDir.exists())
+//                downDir.mkdir()
+//            GlobalLog.writeInfoLog("配置文件不存在，创建配置文件.")
+//            if (configFile.createNewFile()){
+//                val setting = Setting.SettingPersistence(
+//                    null,
+//                    0.5,
+//                    defaultDirPath,
+//                    defaultDirPath,
+//                    16.0f,
+//                    "148,0,211",
+//                    true,
+//                    "28,28,28",
+//                    "255,246,142,0",
+//                    "28,28,28",
+//                    "151,255,255"
+//                )
+//                configFile.writeText(json.encodeToString(setting), charset("utf-8"))
+//            }
+//        }
     }
 }

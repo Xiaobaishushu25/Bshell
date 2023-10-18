@@ -51,9 +51,10 @@ class FileCommandTask(private val ssh: SSH,private val mainWindow: MainWindow) {
                             Platform.runLater { nowIndex.value = index + 1 }
                             updateMessage(it.split("/").last())
                             try {
-//                                println("进来删除$it")
-                                ssh.execCommand("rm -r $it")
                                 mainWindow.writeInfoLog("${javaClass.simpleName}：删除$it(rm -r $it)")
+//                                println("进来删除$it")
+                                val result = ssh.execCommand("rm -r $it")
+                                mainWindow.writeInfoLog("${javaClass.simpleName}：删除${it}结果$result")
                             } catch (e: Exception) {
                                 Platform.runLater { nowStatus.value = 5 }
                                 println("捕获到异常")
@@ -70,9 +71,10 @@ class FileCommandTask(private val ssh: SSH,private val mainWindow: MainWindow) {
                             Platform.runLater { nowIndex.value = index + 1 }
                             updateMessage(it.split("/").last())
                             try {
-//                                println("正在复制$it")
-                                ssh.execCommand("cp -r $it $pastePath")
                                 mainWindow.writeInfoLog("${javaClass.simpleName}：将{$it}复制到$pastePath(cp -r $it $pastePath)")
+                                val result = ssh.execCommand("cp -r $it $pastePath")
+                                mainWindow.writeInfoLog("${javaClass.simpleName}：将{$it}复制到${pastePath}结果${result}")
+
                             } catch (e: Exception) {
                                 Platform.runLater { nowStatus.value = 5 }
                                 println("捕获到异常")

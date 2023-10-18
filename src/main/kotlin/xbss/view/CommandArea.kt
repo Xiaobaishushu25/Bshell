@@ -24,6 +24,8 @@ import javafx.stage.Popup
 import javafx.util.Duration
 import xbss.MainAPP
 import xbss.config.AppData
+import xbss.config.Setting
+import xbss.config.Setting.parseColor
 import xbss.config.TextColor
 import xbss.myterminal.jediterm.terminal.ui.JediTermWidget
 import xbss.myterminal.jediterm.terminal.ui.settings.DefaultSettingsProvider
@@ -269,14 +271,26 @@ class CommandArea(private val ssh: SSH,private val mainWindow: MainWindow):Stack
     }
 
     private fun initTerminal() {
+        //terminal的设置一般在两个类里面，JediTermWidget和DefaultSettingsProvider
+        val settingsProvider = DefaultSettingsProvider()
+        settingsProvider.initTerminalFontSize(Setting.terminalFontSizeP.value)
+        settingsProvider.initCursorColor(Setting.terminalCursorColorP.value.parseColor())
+        settingsProvider.initSelectionStyle(Setting.terminalTextColorSelecting, Setting.terminalBackColorSelecting)
+        settingsProvider.initTextColorUnSelected(Setting.terminalTextColorUnSelected)
+        settingsProvider.initTerminalBackColorSelecting(Setting.terminalBackColorSelecting)
         //这个列是影响每行最多字符数,行数貌似影响高度
-        widget = JediTermWidget(119, 54, DefaultSettingsProvider())
+        widget = JediTermWidget(119, 54, settingsProvider)
         widget.ttyConnector = ssh.getPtyProcessTtyConnector()
         widget.start()
         terminal= SwingNode()
         terminal.content = widget
         widget.terminalTextBuffer.myWidthProperty.addListener{ _,_,newValue -> ssh.setPtySize(newValue.toInt()) }
-//        println("初始化的终端宽度是${widget.width}  ${widget.terminalTextBuffer.width}")
+        Setting.terminalFontSizeP.addListener { _, _, newValue ->
+            widget.setTerminalFontSize(newValue.toFloat())
+        }
+        Setting.terminalCursorColorP.addListener { _, _, newValue ->
+            widget.setCursorStyle(newValue.parseColor())
+        }
     }
     private fun initCommandHBox(){
         initListView()

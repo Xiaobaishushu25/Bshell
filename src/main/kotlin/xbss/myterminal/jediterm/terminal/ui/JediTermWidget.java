@@ -1,5 +1,7 @@
 package xbss.myterminal.jediterm.terminal.ui;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xbss.myterminal.jediterm.core.Color;
 import xbss.myterminal.jediterm.core.typeahead.TerminalTypeAheadManager;
 import xbss.myterminal.jediterm.core.typeahead.TypeAheadTerminalModel;
@@ -11,10 +13,6 @@ import xbss.myterminal.jediterm.terminal.model.*;
 import xbss.myterminal.jediterm.terminal.model.hyperlinks.HyperlinkFilter;
 import xbss.myterminal.jediterm.terminal.model.hyperlinks.TextProcessing;
 import xbss.myterminal.jediterm.terminal.ui.settings.SettingsProvider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
@@ -31,7 +29,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p/>
  */
 public class JediTermWidget extends JPanel implements TerminalSession, TerminalWidget, TerminalActionProvider {
-  private static final Logger LOG = LoggerFactory.getLogger(JediTermWidget.class);
 
   protected final TerminalPanel myTerminalPanel;
   protected final JScrollBar myScrollBar;
@@ -63,7 +60,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
     StyleState styleState = createDefaultStyle();
 
     myTextProcessing = new TextProcessing(settingsProvider.getHyperlinkColor(),
-      settingsProvider.getHyperlinkHighlightingMode());
+            settingsProvider.getHyperlinkHighlightingMode());
 
     TerminalTextBuffer terminalTextBuffer = new TerminalTextBuffer(columns, lines, styleState, settingsProvider.getBufferMaxLinesCount(), myTextProcessing);
     myTextProcessing.setTerminalTextBuffer(terminalTextBuffer);
@@ -74,7 +71,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
     myTypeAheadTerminalModel = new JediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
     myTypeAheadManager = new TerminalTypeAheadManager(myTypeAheadTerminalModel);
     JediTermDebouncerImpl typeAheadDebouncer =
-      new JediTermDebouncerImpl(myTypeAheadManager::debounce, TerminalTypeAheadManager.MAX_TERMINAL_DELAY);
+            new JediTermDebouncerImpl(myTypeAheadManager::debounce, TerminalTypeAheadManager.MAX_TERMINAL_DELAY);
     myTypeAheadManager.setClearPredictionsDebouncer(typeAheadDebouncer);
     myTerminalPanel.setTypeAheadManager(myTypeAheadManager);
 
@@ -111,18 +108,6 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
     myTerminalPanel.setBackground(transparentColor);
     this.setBackground(transparentColor);
 
-  }
-
-  /**
-   *  我新加的，以textStyle的风格添加一行新的text
-   * @param text
-   * @param textStyle
-   */
-  public void addNewLine(TextStyle textStyle,String text){
-    myTerminal.writeNewLine(text,textStyle);
-  }
-  public void addNullNewLine(){
-    myTerminal.newNullLine();
   }
   protected JScrollBar createScrollBar() {
     JScrollBar scrollBar = new JScrollBar();
@@ -175,7 +160,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
 
   protected TerminalStarter createTerminalStarter(@NotNull JediTerminal terminal, @NotNull TtyConnector connector) {
     return new TerminalStarter(terminal, connector,
-      new TtyBasedArrayDataStream(connector, myTypeAheadManager::onTerminalStateChanged), myTypeAheadManager);
+            new TtyBasedArrayDataStream(connector, myTypeAheadManager::onTerminalStateChanged), myTypeAheadManager);
   }
 
   @Override
@@ -193,7 +178,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
       myEmuThread = new Thread(new EmulatorTask());
       myEmuThread.start();
     } else {
-      LOG.error("Should not try to start session again at this point... ");
+      System.out.println("Should not try to start session again at this point... ");
     }
   }
   /**
@@ -266,11 +251,11 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
   @Override
   public List<TerminalAction> getActions() {
     return List.of(new TerminalAction(mySettingsProvider.getFindActionPresentation(),
-      keyEvent -> {
-        showFindText();
-        return true;
+            keyEvent -> {
+              showFindText();
+              return true;
 
-      }).withMnemonicKey(KeyEvent.VK_F));
+            }).withMnemonicKey(KeyEvent.VK_F));
   }
 
   private void showFindText() {
@@ -363,7 +348,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
           myTerminalStarter.start();
         }
       } catch (Exception e) {
-        LOG.error("Exception running terminal", e);
+        System.out.println("Exception running terminal" + e);
       } finally {
         try {
           myTtyConnector.close();
@@ -598,5 +583,36 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
   @Override
   public void removeListener(TerminalWidgetListener listener) {
     myListeners.remove(listener);
+  }
+
+
+  //by v0.5.3 下面这些函数全是我为了设置加的 一般来说可以这里的设置是实时可见的，DefaultSettingsProvider中的新加函数是初始化用的
+
+  /**
+   * 我新加的，以textStyle的风格添加一行新的text
+   *
+   * @param text
+   * @param textStyle
+   */
+  public void addNewLine(TextStyle textStyle, String text) {
+    myTerminal.writeNewLine(text, textStyle);
+  }
+
+  public void addNullNewLine() {
+    myTerminal.newNullLine();
+  }
+
+  public void setTerminalFontSize(float size) {
+    mySettingsProvider.setTerminalFontSize(size);
+    myTerminalPanel.reInitFontAndResize();
+  }
+
+  /**
+   * 本来是两个颜色的，但是我试了一下绘制cursor的时候背景色有一些处理，懒得搞了，直接用一个颜色吧
+   *
+   * @param foreground
+   */
+  public void setCursorStyle(TerminalColor foreground) {
+    myTerminalPanel.setMyCursorStyle(foreground, foreground);
   }
 }

@@ -1,13 +1,13 @@
 package xbss.myterminal.jediterm.terminal.ui;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xbss.myterminal.jediterm.core.Color;
 import xbss.myterminal.jediterm.core.TerminalCoordinates;
 import xbss.myterminal.jediterm.core.compatibility.Point;
 import xbss.myterminal.jediterm.core.typeahead.TerminalTypeAheadManager;
 import xbss.myterminal.jediterm.core.util.Ascii;
 import xbss.myterminal.jediterm.core.util.TermSize;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xbss.myterminal.jediterm.terminal.*;
 import xbss.myterminal.jediterm.terminal.emulator.ColorPalette;
 import xbss.myterminal.jediterm.terminal.emulator.charset.CharacterSets;
@@ -79,8 +79,9 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
    * 光标样式（未被选中时）
    */
   private TextStyle myCursorStyle;
-
-
+  /**
+   * 这个控制终端文字颜色和背景色，应该不能动态刷新
+   */
   final private StyleState myStyleState;
   /*scroll and cursor*/
   final private TerminalCursor myCursor = new TerminalCursor();
@@ -157,9 +158,22 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
     super.repaint();
   }
 
+  /**
+   * 我加的，用于重新设置终端字体大小
+   */
   protected void reInitFontAndResize() {
     initFont();
     sizeTerminalFromComponent();
+  }
+
+  /**
+   * v0.5.3 设置未选中光标颜色
+   *
+   * @param foreground 是光标失去焦点后那个框的颜色，但是我试了一下绘制的时候有一些处理，懒得搞了，直接用一个颜色吧
+   * @param background 光标获得焦点后那个实心块的颜色
+   */
+  protected void setMyCursorStyle(TerminalColor foreground, TerminalColor background) {
+    myCursorStyle = new TextStyle(foreground, background);
   }
 
   protected void initFont() {
@@ -510,7 +524,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
           try {
             terminalPanel.doRepaint();
           } catch (Exception ex) {
-//            LOG.error("Error while terminal panel redraw", ex);
+//            System.out.println("Error while terminal panel redraw", ex);
           }
         }
       } else { // terminalPanel was garbage collected
@@ -710,7 +724,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
 //      // emoji, which are slightly higher than the font metrics reported character height :(
 //      int oldCharHeight = fontMetricsHeight + (int) (lineSpacing * 2) + 2;
 //      int oldDescent = fo.getDescent() + (int)lineSpacing;
-//      LOG.debug("charHeight=" + oldCharHeight + "->" + myCharSize.height +
+//      System.out.println("charHeight=" + oldCharHeight + "->" + myCharSize.height +
 //              ", descent=" + oldDescent + "->" + myDescent);
 //    }
 
@@ -891,7 +905,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
   /**
    *   获取选中的样式，前景（文字）和背景色（高亮）
    *   我设置的不使用反转颜色，这样可以自定义前景背景,
-   *   在此设置：{@link DefaultSettingsProvider#getSelectionColor()} }
+   *   在此设置：{@link DefaultSettingsProvider#getSelectionStyle()} }
    * @param style
    * @return
    */
@@ -902,7 +916,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
       return getInversedStyle(style);
     }
     TextStyle.Builder builder = style.toBuilder();
-    TextStyle mySelectionStyle = mySettingsProvider.getSelectionColor();
+    TextStyle mySelectionStyle = mySettingsProvider.getSelectionStyle();
     builder.setBackground(mySelectionStyle.getBackground());
     builder.setForeground(mySelectionStyle.getForeground());
     if (builder instanceof HyperlinkStyle.Builder) {
@@ -1189,10 +1203,10 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
 
       java.awt.Color fgColor = getPaletteForeground(myStyleState.getForeground(style.getForegroundForRun()));
       TextStyle inversedStyle = getInversedStyle(style);
-//      TextStyle inversedStyle = new TextStyle(new TerminalColor(148, 0, 211), new TerminalColor(139, 0, 0));
-      java.awt.Color inverseBg = getPaletteBackground(myStyleState.getBackground(inversedStyle.getBackgroundForRun()));
-      fgColor = new java.awt.Color(148, 0, 211);
-      inverseBg = new java.awt.Color(148, 0, 211);
+//      java.awt.Color inverseBg = getPaletteBackground(myStyleState.getBackground(inversedStyle.getBackgroundForRun()));
+      java.awt.Color inverseBg = getPaletteBackground(myStyleState.getBackground(style.getBackgroundForRun()));
+//      fgColor = new java.awt.Color(148, 0, 211);
+//      inverseBg = new java.awt.Color(148, 0, 211);
       switch (myShape) {
         case BLINK_BLOCK:
         case STEADY_BLOCK:
@@ -1881,7 +1895,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
       }
     }
     catch (Exception ex) {
-//      LOG.error("Error sending pressed key to emulator", ex);
+//      System.out.println("Error sending pressed key to emulator", ex);
     }
     return false;
   }
@@ -1952,7 +1966,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
         return processCharacter(e);
       }
       catch (Exception ex) {
-//        LOG.error("Error sending typed key to emulator", ex);
+//        System.out.println("Error sending typed key to emulator", ex);
       }
     }
     return false;
@@ -2042,7 +2056,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
           }
         }
 
-        if (sb.length() > 0) {
+        if (!sb.isEmpty()) {
           myTerminalStarter.sendString(sb.toString(), true);
         }
       }

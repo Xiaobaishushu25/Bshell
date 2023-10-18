@@ -1,10 +1,10 @@
 package xbss.myterminal.jediterm.terminal.ui.settings;
 
+import org.jetbrains.annotations.NotNull;
 import xbss.myterminal.jediterm.terminal.HyperlinkStyle;
 import xbss.myterminal.jediterm.terminal.TextStyle;
 import xbss.myterminal.jediterm.terminal.emulator.ColorPalette;
 import xbss.myterminal.jediterm.terminal.model.TerminalTypeAheadSettings;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -14,6 +14,16 @@ public interface UserSettingsProvider {
   Font getTerminalFont();
 
   float getTerminalFontSize();
+
+  /**
+   * v0.5.3添加，用于在初始化时设置终端字体大小
+   */
+  void initTerminalFontSize(float size);
+
+  /**
+   * v0.5.3添加，用于设置终端字体大小
+   */
+  void setTerminalFontSize(float size);
 
   /**
    * @return vertical scaling factor 设置行间距
@@ -32,7 +42,7 @@ public interface UserSettingsProvider {
 
   TextStyle getDefaultStyle();
 
-  TextStyle getSelectionColor();
+  TextStyle getSelectionStyle();
   TextStyle getCursorStyle();
 
   TextStyle getFoundPatternColor();
@@ -66,7 +76,7 @@ public interface UserSettingsProvider {
   boolean forceActionOnMouseReporting();
 
   int getBufferMaxLinesCount();
-  
+
   boolean altSendsEscape();
 
   boolean ambiguousCharsAreDoubleWidth();

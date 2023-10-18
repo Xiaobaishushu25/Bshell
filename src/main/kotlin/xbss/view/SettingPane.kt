@@ -44,7 +44,10 @@ class SettingPane:Application() {
     }
     private fun initBottomPane(){
         bottomPane = HBox(10.0, Label("(不保存此次修改仅当前使用期间有效)"),
-            Button("确定").apply { styleClass.add("sure") },
+            Button("确定").apply {
+                styleClass.add("sure")
+                setOnAction { Setting.saveSetting() }
+            },
             Button("取消").apply { styleClass.add("back") })
     }
     private fun initLeftPane(){
@@ -91,7 +94,7 @@ class SettingPane:Application() {
         value.textProperty().bind(Bindings.format("%.0f", slider.valueProperty()));
         val hBox1 = HBox(10.0, slider,value).apply { alignment = Pos.CENTER }
         rightPane = VBox(20.0,Label("图片路径:"),hBox,Label("不透明度:"),hBox1,checkBox)
-        Setting.isAutoResize.bindBidirectional(checkBox.selectedProperty())
+//        Setting.isAutoResize.bindBidirectional(checkBox.selectedProperty())
         path.textProperty().bindBidirectional(Setting.backgroundImagePathP)
         Setting.opacityP.bind(value.textProperty().map { it.toDouble().div(100) })
     }

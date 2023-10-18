@@ -1,7 +1,6 @@
 package xbss.myterminal.jediterm.terminal.ui.settings;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xbss.myterminal.jediterm.terminal.HyperlinkStyle;
 import xbss.myterminal.jediterm.terminal.TerminalColor;
 import xbss.myterminal.jediterm.terminal.TextStyle;
@@ -21,15 +20,16 @@ import java.util.Collections;
 
 import static xbss.myterminal.jediterm.terminal.ui.AwtTransformers.fromAwtToTerminalColor;
 
-
+//我加的函数有两种，一种set开头一种init开头，set开头可以重复调用实时刷新，init就初始化时调用一次，不实时刷新
 public class DefaultSettingsProvider implements SettingsProvider {
   private Font font;
   private float fontSize = 15.0f;
 
   //  private TextStyle defaultStyle = new TextStyle(TerminalColor.BLACK, TerminalColor.rgb(142,299,238,0));
+  //终端的字体颜色和背景颜色，默认是透明的
   private TextStyle defaultStyle = new TextStyle(new TerminalColor(28,28,28),new TerminalColor(255,246,142,0));
   private TextStyle cursorStyle = new TextStyle(new TerminalColor(148, 0, 211),new TerminalColor(148, 0, 211));
-  private TextStyle selectionColor = new TextStyle(TerminalColor.BLACK, TerminalColor.rgb(151, 255, 255));
+  private TextStyle selectionStyle = new TextStyle(TerminalColor.BLACK, TerminalColor.rgb(151, 255, 255));
   @Override
   public @NotNull TerminalActionPresentation getOpenUrlActionPresentation() {
     return new TerminalActionPresentation("Open as URL", Collections.emptyList());
@@ -138,6 +138,15 @@ public class DefaultSettingsProvider implements SettingsProvider {
   public float getTerminalFontSize() {
     return fontSize;
   }
+
+  /**
+   * 用于初始化字体大小，因为setTerminalFontSize需要在font初始化后才能调用
+   *
+   * @param size
+   */
+  public void initTerminalFontSize(float size) {
+    fontSize = size;
+  }
   public void setTerminalFontSize(float size) {
     fontSize = size;
     font = font.deriveFont(fontSize);
@@ -145,15 +154,46 @@ public class DefaultSettingsProvider implements SettingsProvider {
 
   @Override
   public TextStyle getDefaultStyle() {
-    //return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
-//    return new TextStyle(TerminalColor.BLACK, TerminalColor.rgb(142,299,238));
-//    return new TextStyle(TerminalColor.BLACK, TerminalColor.rgb(142,299,238,0));
     return defaultStyle;
-//    return new TextStyle(TerminalColor.BLACK, null);
     // return new TextStyle(TerminalColor.WHITE, TerminalColor.rgb(24, 24, 24));
   }
-  public void setDefaultStyle(TerminalColor foreground, TerminalColor background) {
+
+  public void initDefaultStyle(TerminalColor foreground, TerminalColor background) {
     defaultStyle = new TextStyle(foreground, background);
+  }
+
+  /**
+   * 设置未选中的终端文本颜色
+   *
+   * @param textColor
+   */
+  public void initTextColorUnSelected(TerminalColor textColor) {
+    defaultStyle = new TextStyle(textColor, defaultStyle.getBackground());
+  }
+
+  /**
+   * 设置终端整个背景颜色（最好不要设置，默认是透明的）
+   *
+   * @param backColor
+   */
+  public void initTerminalColor(TerminalColor backColor) {
+    defaultStyle = new TextStyle(defaultStyle.getForeground(), backColor);
+  }
+
+  /**
+   * 设置选中时的终端文本颜色，这个函数应该用不到，因为初始化时用initSelectionStyle就够了
+   *
+   * @param textColor
+   */
+  public void initTextColorSelecting(TerminalColor textColor) {
+    selectionStyle = new TextStyle(textColor, selectionStyle.getBackground());
+  }
+
+  /**
+   * 设置选中时的终端背景颜色，这个函数应该用不到，因为初始化时用initSelectionStyle就够了
+   */
+  public void initTerminalBackColorSelecting(TerminalColor backColor) {
+    selectionStyle = new TextStyle(selectionStyle.getForeground(), backColor);
   }
 
 
@@ -168,20 +208,31 @@ public class DefaultSettingsProvider implements SettingsProvider {
 //  public TextStyle getSelectionColor() {
 //    return new TextStyle(TerminalColor.BLACK, TerminalColor.rgb(151, 255, 255));
 //  }
-  public TextStyle getSelectionColor() {
-    return selectionColor;
-  }
-  public void setSelectionColor(TerminalColor foreground,TerminalColor background){
-    selectionColor = new TextStyle(foreground,background);
+  public TextStyle getSelectionStyle() {
+    return selectionStyle;
   }
 
   /**
-   * 这两个我自己加的，用于设置光标的颜色（未被选择时），其中foreground是光标失去焦点后那个框的颜色，
-   *       background是光标获得焦点后那个实心块的颜色
+   * 设置选中的背景
+   *
+   * @param textcolor  :选中的文字颜色
+   * @param background ：选中的背景颜色
+   */
+  public void initSelectionStyle(TerminalColor textcolor, TerminalColor background) {
+    selectionStyle = new TextStyle(textcolor, background);
+  }
+
+  /**
+   * 下面三个函数我自己加的，用于设置光标的颜色（未被选择时），其中foreground是光标失去焦点后那个框的颜色，
+   *       background是光标获得焦点后那个实心块的颜色（试了一下foreground不起效果，直接全用一个得了）
    * @return
    */
-  public TextStyle getCursorStyle(){
+  public TextStyle getCursorStyle() {
     return cursorStyle;
+  }
+
+  public void initCursorColor(TerminalColor cursorColor) {
+    cursorStyle = new TextStyle(cursorColor,cursorColor);
   }
   public void setCursorStyle(TerminalColor foreground,TerminalColor background){
     cursorStyle = new TextStyle(foreground,background);

@@ -15,7 +15,7 @@
  */
 package xbss.myterminal.intellij.ui;
 
-import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.TIntIntHashMap;
 import xbss.myterminal.intellij.openapi.diagnostic.Logger;
 import xbss.myterminal.intellij.openapi.util.Comparing;
 import xbss.myterminal.intellij.openapi.util.SystemInfo;

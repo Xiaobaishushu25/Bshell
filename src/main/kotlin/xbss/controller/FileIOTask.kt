@@ -91,7 +91,7 @@ class FileIOTask(private val type:FileIOPane.FileIOType, private val mainWindow:
                         println("捕获到异常")
                         error = true
                         println(e.message)
-                        mainWindow.writeErrorLog("${javaClass.simpleName}：$error")
+                        mainWindow.writeErrorLog("${javaClass.simpleName}：$error ${e.message}")
                         updateMessage(e.message)
                         return
                     }
