@@ -80,7 +80,6 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                 val content = ClipboardContent()
                 content.putString(pathIndication.text)
                 Clipboard.getSystemClipboard().setContent(content)
-                treeView.scrollTo(treeView.selectionModel.selectedIndex)
             }
         }
         val up = Button().apply {
