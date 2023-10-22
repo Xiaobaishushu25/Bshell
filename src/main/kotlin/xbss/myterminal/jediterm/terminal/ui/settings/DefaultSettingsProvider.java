@@ -112,26 +112,21 @@ public class DefaultSettingsProvider implements SettingsProvider {
     if (font!=null){
       return font;
     }
-    String fontName;
-    if (UIUtil.isWindows) {
-      //fontName = "Consolas";
-      fontName = "宋体";
-    } else if (UIUtil.isMac) {
-      fontName = "Menlo";
-    } else {
-      fontName = "Monospaced";
-    }
+//    String fontName;
+//    if (UIUtil.isWindows) {
+//      //fontName = "Consolas";
+//      fontName = "宋体";
+//    } else if (UIUtil.isMac) {
+//      fontName = "Menlo";
+//    } else {
+//      fontName = "Monospaced";
+//    }
     try {
       font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/font/FiraFZH2.ttf")).deriveFont(Font.PLAIN, (int)getTerminalFontSize());
       return font;
-    }
-    catch (FontFormatException e) {
+    } catch (FontFormatException | IOException e) {
       throw new RuntimeException(e);
     }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-//    return new Font(fontName, Font.PLAIN, (int)getTerminalFontSize());
   }
 
   @Override

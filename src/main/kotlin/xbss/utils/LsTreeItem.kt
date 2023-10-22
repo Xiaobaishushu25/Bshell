@@ -17,7 +17,8 @@ import xbss.ssh.SSH
  */
 class LsTreeItem(val path: String):TreeItem<LsTreeItem.FileItem>(){
     data class FileItem(var path: String,var fileName:String,val fileType:FileType)
-    val loadComplete = SimpleBooleanProperty(false) //该结点是否加载完成
+
+    val loadCompleteP = SimpleBooleanProperty(false) //该结点是否加载完成
     private val files: MutableList<LsEntry> = mutableListOf()
     private lateinit var sftpATTRS: SftpATTRS
     private var notInitialized = true
@@ -90,7 +91,7 @@ class LsTreeItem(val path: String):TreeItem<LsTreeItem.FileItem>(){
                 }
                 children.addAll(items)
                 children.removeFirst()
-                loadComplete.value = true
+                loadCompleteP.value = true
             }
         }else if (notInitialized&&!permission){
             notInitialized = false

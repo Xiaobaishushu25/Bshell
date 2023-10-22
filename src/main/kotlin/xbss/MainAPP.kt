@@ -37,7 +37,8 @@ class MainAPP:Application() {
     private lateinit var addTab:Tab
     private lateinit var nowSelectTab: Tab
     companion object{
-        val service: ExecutorService = Executors.newFixedThreadPool(15)
+        //        val service: ExecutorService = Executors.newFixedThreadPool(15)
+        val service: ExecutorService = Executors.newVirtualThreadPerTaskExecutor()
         var stage = Stage()
         /**
          * 在任务栏高亮图标
@@ -115,15 +116,22 @@ class MainAPP:Application() {
             width = InitSize.STAGE_WIDTH
             title = "BShell ${AppVersion.VERSION}"
             show()
+            iconifiedProperty().addListener { _, _, newValue ->
+                if (!newValue) {
+                    tabPane.selectionModel.selectedItem.content.apply {
+                        if (this is MainWindow)
+                            this.commandArea.terminalRequestFocus()
+                    }
+                }
+            }
             setOnCloseRequest {
                 service.shutdown()
-                tabPane.tabs.forEach {
-                    it.content?.let {it -> if (it is MainWindow) it.closeAll() }
+                tabPane.tabs.forEach { //这里判空是有必要的o，因为有一个+的tab没有content
+                    it.content?.let { content -> if (content is MainWindow) content.closeAll() }
                 }
                 exitProcess(0)
             }
         }
-        stage.toFront()
         registerShortCut()
         initSizeListener()
     }

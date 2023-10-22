@@ -135,13 +135,6 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
             style = "-fx-background-color: #FFFACD;-fx-text-fill:black;-fx-font-size: 13" }
     }
     private fun initFileTree() {
-////        rootTreeItem = LsTreeItem(ssh, "/")
-////        treeView.root = rootTreeItem
-//        rootTreeItem = LsTreeItem(ssh, "/")
-//
-//        treeView.root = rootTreeItem
-//        rootTreeItem.isExpanded = true
-//        expandItem(defaultPath)
         rootTreeItem = LsTreeItem("正在初始化.deny")
         treeView.root = rootTreeItem
         MainAPP.service.submit {
@@ -345,31 +338,37 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
 
     /**
      *  真正的递归展开函数
-     *  todo: bug10:应该是在v0.5.3后，之前版本的逻辑是在每个递归找到指定目录后自动滚动到指定目录，bug表现为滚动完成到指定目录后，会朝下滚动若干距离。
+     *  bug10:应该是在v0.5.3后，之前版本的逻辑是在每个递归找到指定目录后自动滚动到指定目录，bug表现为滚动完成到指定目录后，会朝下滚动若干距离。
      *  可能是fx21的问题？
      *  优化了一下滚动逻辑，现在v0.5.5，不会在每个递归都滚动到指定目录，只在递归结束时滚动到focus目录。（这并没有修复此bug）
-     *  修复：在递归结束时使用fx线程，休眠1s后在滚动到focus目录。（试过0.5s不行）
+     *  修复1：在递归结束时使用fx线程，休眠1s后在滚动到focus目录。（试过0.5s不行）
+     *       在v0.5.8发现休眠1s也不行，确定是由于目录没加载完成就滚动到指定目录导致的
+     *  修复2：v0.5.9：监听item.loadCompleteP，加载完成后再scrollTo，彻底解决.
      * @param item
      * @param path
      * @return
      */
     private fun expandItemS(item: LsTreeItem, path: MutableList<String>) {
         //退出条件
-        if (path.isEmpty()) {
-            Platform.runLater { //bug10
-                Thread.sleep(1000) //（试过0.5s不行）
-                treeView.scrollTo(treeView.selectionModel.selectedIndex)
+        if (path.isEmpty()) {//这个函数不是javafx线程
+            item.loadCompleteP.addListener { _, _, newValue ->
+                if (newValue) {//这个不是javafx线程
+//                    println("结点是否展开"+item.isExpanded+"结点是否加载完成"+item.loadCompleteP)
+                    Platform.runLater {
+                        treeView.scrollTo(treeView.selectionModel.selectedIndex)
+                    }
+                }
             }
             return
         }
-        if (item.loadComplete.value) {//如果该结点已加载完成（一般都是未加载完成）
+        if (item.loadCompleteP.value) {//如果该结点已加载完成（一般都是未加载完成）
             item.children.find { it.value.path.contains(path.first()) }?.let {
                 it.isExpanded =true
                 path.removeFirst()
                 expandItemS(it as LsTreeItem,path)
             }
         }else{
-            item.loadComplete.addListener { _,_,_ ->
+            item.loadCompleteP.addListener { _, _, _ ->
                 item.children.find { it.value.path.contains(path.first()) }?.let {
                     Platform.runLater {//由于外面不是fx线程，要转移一下
                         treeView.selectionModel.clearSelection()
@@ -377,6 +376,9 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
                         treeView.focusModel.focus(treeView.selectionModel.selectedIndex)
 //                        treeView.scrollTo(treeView.selectionModel.selectedIndex)
                         it.isExpanded = true
+                        it.expandedProperty().addListener { _, _, newValue ->
+                            println("展开")
+                        }
                     }
 //                    it.isExpanded =true
 //                    println("找到了${path.first()},展开了${it.value}")

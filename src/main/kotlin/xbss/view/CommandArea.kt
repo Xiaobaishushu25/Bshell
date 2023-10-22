@@ -209,7 +209,6 @@ class CommandArea(private val ssh: SSH,private val mainWindow: MainWindow):Stack
 
     private fun initTextField() {
         textField = TextField().apply {
-//            style = "-fx-background-color: #EEE5DE60;-fx-font-size:16px;-fx-prompt-text-fill:#8B4500"
             style = "-fx-background-color: #FFFACD00;-fx-font-size:16px;-fx-prompt-text-fill:#8B4500"
             promptText = "TAB补全、回车发送、delete删除命令、双击Ctrl切换输入焦点"
             textProperty().addListener { _,_,newValue ->

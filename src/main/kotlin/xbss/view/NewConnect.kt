@@ -40,8 +40,9 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
     private  var usernameT:TextField = getTextFiled()
 //    private  var passwordT:TextField = getTextFiled(moveX = 15.0)
     private lateinit var passwordT:PasswordField
-    private  var cdPathT:TextField = getTextFiled("/", double = 230.0)
-    private  var initCommandT:TextField = getTextFiled(double = 230.0)
+    private var cdPathT: TextField = getTextFiled("", double = 230.0).apply { promptText = "可不填" }
+    private var initCommandT: TextField =
+        getTextFiled(double = 230.0).apply { promptText = "如conda activate xx 可不填" }
     private  var commentT:TextField = getTextFiled(text = "无",double = 230.0, moveX = 30.0)
     private lateinit var tip:HBox
     private lateinit var hisTry:HBox //历史尝试记录
@@ -68,7 +69,6 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
                     initCommand = initCommandT.text
                     comments = commentT.text
                 }
-//                Platform.runLater { success.bind(testConnect(account)) }
                 success.bind(testConnect(account))
             }
         }
@@ -82,13 +82,10 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
             translateX = -100.0
             //点击信息立刻删除，不需要等淡出
             setOnMouseClicked { isVisible = false }
-//            setStyle("-fx-border-width: 1px;-fx-border-color: green")
 
         }
         hisTry = HBox(5.0).apply {
             alignment = Pos.CENTER
-//            translateX = -190.0
-//            setStyle("-fx-border-width: 1px;-fx-border-color: red")
         }
         ft =FadeTransition(Duration.millis(10000.0), tip).apply {
             fromValue = 1.0
