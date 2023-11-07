@@ -11,6 +11,7 @@ import xbss.MainAPP
 import xbss.config.DatabasePro.userPath
 import xbss.myterminal.jediterm.terminal.TerminalColor
 import java.io.File
+import java.lang.Error
 
 /**
  * @author  Xbss
@@ -132,7 +133,12 @@ object Setting {
                 }
             }
         } else {
-            settingPersistence = json.decodeFromString<SettingPersistence>(configFile.readText(charset("utf-8")))
+            //为什么序列化失败异常不是在这里抛出的？捕捉不到
+            try {
+                settingPersistence = json.decodeFromString<SettingPersistence>(configFile.readText(charset("utf-8")))
+            }catch (e:Error){
+                GlobalLog.writeErrorLog("读取配置文件失败,${e}")
+            }
         }
     }
 
