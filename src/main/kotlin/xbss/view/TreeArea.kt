@@ -193,7 +193,7 @@ class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private v
 
                                     }
                                     //下面这些双击用文本编辑器打开
-                                    FileType.TXT, FileType.RS, FileType.JAVA, FileType.GO, FileType.PY, FileType.MD, FileType.KOTLIN -> {
+                                    FileType.FILE, FileType.TXT, FileType.RS, FileType.JAVA, FileType.GO, FileType.PY, FileType.MD, FileType.KOTLIN -> {
                                         val sftp = ssh.getChSftpOrNull()
                                         sftp?.let {
                                             val fileContentStage = FileContentStage(item, ssh, it)

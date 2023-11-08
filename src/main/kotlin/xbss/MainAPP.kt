@@ -21,6 +21,9 @@ import xbss.view.DonateStage
 import xbss.view.InitPane
 import xbss.view.MainWindow
 import xbss.view.SettingPane
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess

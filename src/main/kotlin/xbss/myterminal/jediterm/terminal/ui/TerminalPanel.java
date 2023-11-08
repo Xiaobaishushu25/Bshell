@@ -1829,12 +1829,13 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
   }
 
   /**
-   * 键盘按下事件，我新加了Ctrl+C（中断事件）、ctrl+x（挂起）、ctrl+d（exit）、
-   *    *         ctrl+h(退格)、ctrl+u(剪切(删除)光标处到行首的所有字符)的处理
+   * 终端快捷键 键盘按下事件，我新加了Ctrl+C（中断事件）、ctrl+x（挂起）、ctrl+d（exit）、
+   *    *         ctrl+h(退格)、ctrl+u(剪切(删除)光标处到行首的所有字符)，esc的处理
    * @param e
    * @return
    */
   private boolean processTerminalKeyPressed(KeyEvent e) {
+    System.out.println(e);
     if (hasUncommittedChars()) {
       return false;
     }
@@ -1868,14 +1869,20 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
         myTerminalStarter.sendBytes(new byte[]{21},true);
         return true;
       }
+      //这个是发送esc（vi模式常用）
+      if (e.getKeyCode() == 27) {//java.awt.event.KeyEvent[KEY_PRESSED,keyCode=27,keyText=Esc,keyChar=' ',keyLocation=KEY_LOCATION_UNKNOWN,rawCode=0,primaryLevelUnicode=0,scancode=0,extendedKeyCode=0x0]
+        myTerminalStarter.sendBytes(new byte[]{27}, true);
+        return true;
+      }
+
+
       // CTRL + Space is not handled in KeyEvent; handle it manually
       if (keychar == ' ' && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
         myTerminalStarter.sendBytes(new byte[]{Ascii.NUL}, true);
         return true;
       }
-
       final byte[] code = myTerminalStarter.getCode(keycode, e.getModifiers());
-      if (code != null) {
+      if (code != null) { //这边好像只负责发送控制按键，比如删除等
         myTerminalStarter.sendBytes(code, true);
         if (mySettingsProvider.scrollToBottomOnTyping() && isCodeThatScrolls(keycode)) {
           scrollToBottom();
@@ -1890,6 +1897,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
 //        myTerminalStarter.sendString(new String(new char[]{Ascii.ESC, simpleMapKeyCodeToChar(e)}), true);
 //        return true;
 //      }
+      //用于检查给定字符是否为ISO控制字符。ISO控制字符是ASCII字符集中的一部分，通常在文本编码和字符处理中被视为特殊字符，而不是可打印字符
       if (Character.isISOControl(keychar)) { // keys filtered out here will be processed in processTerminalKeyTyped
         return processCharacter(e);
       }
@@ -1994,6 +2002,16 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
       if (e.isConsumed()) {
         return;
       }
+      //v0.6.0 加的，使终端支持中文输入
+      char inputChar = e.getKeyChar();
+      if (Character.isDefined(inputChar)) {
+        String inputText = String.valueOf(inputChar);
+        // 处理输入的中文字符
+//        System.out.println("中文输入：" + inputText);
+        myTerminalStarter.sendString(inputText, true);
+      }
+      //不知道下面这个什么意思，我就加在中间了
+
       if (myIgnoreNextKeyTypedEvent || processTerminalKeyTyped(e)) {
         e.consume();
       }
