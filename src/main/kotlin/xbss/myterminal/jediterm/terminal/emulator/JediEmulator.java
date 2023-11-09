@@ -88,7 +88,7 @@ public class JediEmulator extends DataStreamIteratingEmulator {
         } else { // Plain characters
           myDataStream.pushChar(ch);
           String nonControlCharacters = myDataStream.readNonControlCharacters(terminal.distanceToLineEnd());
-
+//          System.out.println("在这里处理字符"+ch+"准备写入"+nonControlCharacters);
           terminal.writeCharacters(nonControlCharacters);
         }
         break;

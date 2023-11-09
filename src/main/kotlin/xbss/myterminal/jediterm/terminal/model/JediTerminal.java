@@ -130,6 +130,7 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
 
   @Override
   public void writeCharacters(String string) {
+//    System.out.println("写入"+string);
     String normalized = Normalizer.normalize(string, Normalizer.Form.NFC);
 //    System.out.println("准备添加"+normalized);
     writeDecodedCharacters(decodeUsingGraphicalState(normalized));
