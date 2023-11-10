@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import xbss.MainAPP
+import xbss.config.GlobalLog
 import xbss.myterminal.jediterm.pty.PtyProcessTtyConnector
 import xbss.server.mapper.pojo.Account
 import java.io.*
@@ -274,6 +275,9 @@ open class SSH(val account: Account) {
 //            close()
 //        }
 //        return result.toString()
+        if (exitStatus != 0) {
+            GlobalLog.writeErrorLog("执行命令${command}失败，错误信息：$result")
+        }
         return ExecResponse(exitStatus, result.toString())
     }
 

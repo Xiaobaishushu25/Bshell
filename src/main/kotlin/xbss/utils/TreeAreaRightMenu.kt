@@ -161,26 +161,40 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
                     textObservable.addListener { _,_,newValue ->
                         if (newValue.isNotEmpty()){
 
-                            val status = SimpleIntegerProperty(0)
-                            val name = SimpleStringProperty("")
-                            treeArea.mainWindow.addMessage(
-                                FileCommandPane(
-                                    FileCommandPane.FileCommandType.CREATE,
-                                    "创建文件夹",
-                                    name,
-                                    SimpleIntegerProperty(1),
-                                    1,
-                                    status
-                                )
-                            )
+//                            val status = SimpleIntegerProperty(0)
+//                            val name = SimpleStringProperty("")
+//                            treeArea.mainWindow.addMessage(
+//                                FileCommandPane(
+//                                    FileCommandPane.FileCommandType.CREATE,
+//                                    "创建文件夹",
+//                                    name,
+//                                    SimpleIntegerProperty(1),
+//                                    1,
+//                                    status
+//                                )
+//                            )
                             val result = ssh.execCommand("mkdir " + item!!.path + "/" + newValue)
                             if (result.exitCode == 0) {
-                                name.value = newValue
-                                status.value = 4
+//                                name.value = newValue
+//                                status.value = 4
+                                treeArea.mainWindow.addMessage(
+                                    Notification(
+                                        Notification.Type.SUCCESS,
+                                        "创建文件夹",
+                                        "成功创建${newValue}"
+                                    )
+                                )
                                 treeArea.refreshItem()
                             } else {
-                                name.value = result.message
-                                status.value = 5
+                                treeArea.mainWindow.addMessage(
+                                    Notification(
+                                        Notification.Type.ERROR,
+                                        "创建文件夹",
+                                        "创建${newValue}失败，原因：${result.message}"
+                                    )
+                                )
+//                                name.value = result.message
+//                                status.value = 5
                             }
 //                            else{
 //                                treeArea.mainWindow.addMessage(FileCommandPane(
@@ -205,8 +219,29 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
                 PopName().apply {
                     textObservable.addListener { _, _, newValue ->
                         if (newValue.isNotEmpty()) {
-                            ssh.execCommand("touch " + item!!.path + "/" + newValue)
-                            treeArea.refreshItem()
+                            val result = ssh.execCommand("touch " + item!!.path + "/" + newValue)
+                            if (result.exitCode == 0) {
+//                                name.value = newValue
+//                                status.value = 4
+                                treeArea.mainWindow.addMessage(
+                                    Notification(
+                                        Notification.Type.SUCCESS,
+                                        "创建文件",
+                                        "成功创建${newValue}"
+                                    )
+                                )
+                                treeArea.refreshItem()
+                            } else {
+                                treeArea.mainWindow.addMessage(
+                                    Notification(
+                                        Notification.Type.ERROR,
+                                        "创建文件",
+                                        "创建${newValue}失败，原因：${result.message}"
+                                    )
+                                )
+//                                name.value = result.message
+//                                status.value = 5
+                            }
                         }
                     }
                     start(Stage())
@@ -220,8 +255,36 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
                 PopName(item!!.fileName).apply {
                     textObservable.addListener { _,_,newValue ->
                         if (newValue.isNotEmpty()&&newValue!=item!!.fileName){
-                            ssh.execCommand("mv ${item!!.path} ${item!!.path.replace(item!!.fileName,"")}/$newValue")
-                            treeArea.refreshFatherItem()
+                            val result = ssh.execCommand(
+                                "mv ${item!!.path} ${
+                                    item!!.path.replace(
+                                        item!!.fileName,
+                                        ""
+                                    )
+                                }/$newValue"
+                            )
+                            if (result.exitCode == 0) {
+//                                name.value = newValue
+//                                status.value = 4
+                                treeArea.mainWindow.addMessage(
+                                    Notification(
+                                        Notification.Type.SUCCESS,
+                                        "重命名",
+                                        "成功重命名${item!!.fileName}为${newValue}"
+                                    )
+                                )
+                                treeArea.refreshFatherItem()
+                            } else {
+                                treeArea.mainWindow.addMessage(
+                                    Notification(
+                                        Notification.Type.ERROR,
+                                        "重命名",
+                                        "重命名${item!!.fileName}失败，原因：${result.message}"
+                                    )
+                                )
+//                                name.value = result.message
+//                                status.value = 5
+                            }
                         }
                     }
                     start(Stage())
@@ -247,6 +310,7 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
                 }else{
                     itemList!!.map { it.value.path }
                 }
+                treeArea.mainWindow.addMessage(Notification(Notification.Type.SUCCESS, "复制文件", "成功复制文件"))
             }
         }
         pasteFile = MenuItem().apply {

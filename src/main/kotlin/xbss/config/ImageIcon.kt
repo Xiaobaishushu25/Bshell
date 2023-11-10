@@ -51,4 +51,5 @@ object ImageIcon {
     val DONATE24 = Image(Image::class.java.getResourceAsStream("/img/donate24.png"))
     val PAY = Image(Image::class.java.getResourceAsStream("/img/pay.png"))
     val NEW24 = Image(Image::class.java.getResourceAsStream("/img/new24.png"))
+    val INFO24 = Image(Image::class.java.getResourceAsStream("/img/info24.png"))
 }

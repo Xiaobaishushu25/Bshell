@@ -95,7 +95,7 @@ class FileIOPane(
 //        close.style = "-fx-background-color:null;-fx-cursor:hand"
         imageView.image = if (type==FileIOType.DOWN) ImageIcon.DOWNLOAD  else ImageIcon.UPLOAD
         titleHBox = HBox(10.0,imageView,Label("$describe $title").apply {
-            style = "-fx-font-size: 13"
+            style = "-fx-font-size: 13px"
             tooltip = Tooltip(this.text).apply { style = "-fx-background-color: #FFFACD;-fx-text-fill:black;-fx-font-size: 13" }
         }).apply {
             prefHeight = 35.0
