@@ -90,10 +90,10 @@ class MainAPP:Application() {
         val donate = Button().apply {
             style = "-fx-background-color:null;-fx-cursor:hand"
             graphic = ImageView(ImageIcon.DONATE24)
-            setOnAction {
-                val donateStage = DonateStage()
-                donateStage.start(Stage())
-            }
+//            setOnAction {
+//                val donateStage = DonateStage()
+//                donateStage.start(Stage())
+//            }
         }
         val setting = Button().apply {
             style = "-fx-background-color:null;-fx-cursor:hand"
