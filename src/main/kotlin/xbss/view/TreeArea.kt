@@ -24,7 +24,8 @@ import java.io.ByteArrayInputStream
  * @version  1.0
  * @describe
  */
-class TreeArea(mainWindow: MainWindow,val taskHandler: FileTaskHandler,private var defaultPath:String = "/"): VBox() {
+class TreeArea(val mainWindow: MainWindow, val taskHandler: FileTaskHandler, private var defaultPath: String = "/") :
+    VBox() {
     val ssh = mainWindow.ssh
 
     /**

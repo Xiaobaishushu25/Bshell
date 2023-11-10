@@ -1,5 +1,8 @@
 package xbss.utils
 
+import javafx.beans.property.ReadOnlyStringProperty
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.*
@@ -13,6 +16,7 @@ import javafx.stage.Stage
 import xbss.config.FileType
 import xbss.config.ImageIcon
 import xbss.config.Setting
+import xbss.view.MainWindow
 import xbss.view.TreeArea
 import java.io.File
 
@@ -156,8 +160,38 @@ class TreeAreaRightMenu(private val treeArea: TreeArea): ContextMenu() {
                 PopName().apply {
                     textObservable.addListener { _,_,newValue ->
                         if (newValue.isNotEmpty()){
-                            ssh.execCommand("mkdir "+item!!.path+"/"+newValue)
-                            treeArea.refreshItem()
+
+                            val status = SimpleIntegerProperty(0)
+                            val name = SimpleStringProperty("")
+                            treeArea.mainWindow.addMessage(
+                                FileCommandPane(
+                                    FileCommandPane.FileCommandType.CREATE,
+                                    "创建文件夹",
+                                    name,
+                                    SimpleIntegerProperty(1),
+                                    1,
+                                    status
+                                )
+                            )
+                            val result = ssh.execCommand("mkdir " + item!!.path + "/" + newValue)
+                            if (result.exitCode == 0) {
+                                name.value = newValue
+                                status.value = 4
+                                treeArea.refreshItem()
+                            } else {
+                                name.value = result.message
+                                status.value = 5
+                            }
+//                            else{
+//                                treeArea.mainWindow.addMessage(FileCommandPane(
+//                                    FileCommandPane.FileCommandType.CREATE,
+//                                    "创建文件夹",
+//                                    SimpleStringProperty(newValue),
+//                                    SimpleIntegerProperty(1),
+//                                    1,
+//                                    SimpleIntegerProperty(result.exitCode)
+//                                    ))
+//                            }
                         }
                     }
                     start(Stage())

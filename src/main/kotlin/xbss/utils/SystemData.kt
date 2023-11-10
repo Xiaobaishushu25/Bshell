@@ -4,6 +4,7 @@ import javafx.application.Platform
 import javafx.geometry.Insets
 import javafx.scene.layout.HBox
 import xbss.MainAPP
+import xbss.config.GlobalLog
 import xbss.ssh.SSH
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -70,7 +71,7 @@ class SystemData(private val ssh: SSH):HBox() {
 ////                        this.children.add(s)
 //                }
             }
-            val gpuNum = ssh.execCommand("nvidia-smi --list-gpus | wc -l").replace("\n", "").toInt()
+            val gpuNum = ssh.execCommand("nvidia-smi --list-gpus | wc -l").message.replace("\n", "").toInt()
 //            Platform.runLater {
 //                for (i in 0 until gpuNum){
 //                    val messageBar = MessageBar("GPU${i}", MessageBar.Type.GPU)
@@ -132,13 +133,16 @@ class SystemData(private val ssh: SSH):HBox() {
     private fun getTimerTask():TimerTask{
         return timerTask {
             dataList.clear()
-            val cpuResult = ssh.execCommand("top -b -n 1 | grep \"Cpu(s)\" | awk '{print \$2+\$4 \"%\"}'").replace("\n", "")
+            val cpuResult =
+                ssh.execCommand("top -b -n 1 | grep \"Cpu(s)\" | awk '{print \$2+\$4 \"%\"}'").message.replace("\n", "")
             //28.2%
             dataList.add(Pair(cpuResult.removeSuffix("%").toDouble(),""))
             //7.7G 2.4G
             //15G 643M
             //这里有可能是两个单位，需要判断换算
-            val memoryResult = ssh.execCommand("free -h | awk 'NR==2{print \$2,\$3}'").replace("\n", "").replace("\r", "").split(" ")
+            val memoryResult =
+                ssh.execCommand("free -h | awk 'NR==2{print \$2,\$3}'").message.replace("\n", "").replace("\r", "")
+                    .split(" ")
             val memoryPer = if (memoryResult[1].last()=='M'){
                 val value1 = memoryResult[1].removeSuffix("M")
                 compute(value1.toDouble().div(1024).reserveOne(),memoryResult[0].removeSuffix("G"))
@@ -148,7 +152,11 @@ class SystemData(private val ssh: SSH):HBox() {
 //                val memoryPer = compute(memoryResult[1].removeSuffix("G"),memoryResult[0].removeSuffix("G"))
 
             dataList.add(Pair(memoryPer,"${memoryResult[1]}/${memoryResult[0]}"))
-            val gpuResult = ssh.execCommand("nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv | tail -n+2").replace(" ","").split("\n")
+            val gpuResult =
+                ssh.execCommand("nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv | tail -n+2").message.replace(
+                    " ",
+                    ""
+                ).split("\n")
             // 3, 21177 MiB, 24576 MiB
 
             for (s in gpuResult){
@@ -161,7 +169,11 @@ class SystemData(private val ssh: SSH):HBox() {
             }
             Platform.runLater {
                 for ((index,value) in uiList.withIndex()){
-                    value.update(dataList[index].first,dataList[index].second)
+                    try {
+                        value.update(dataList[index].first, dataList[index].second)
+                    } catch (e: Exception) {
+                        GlobalLog.writeErrorLog("${e} ${dataList} index是${index}")
+                    }
                 }
             }
         }

@@ -46,12 +46,13 @@ class FileCommandPane(
     private lateinit var statusListener: ChangeListener<Number>
 
     enum class FileCommandType {
-        COPY, DELETE
+        COPY, DELETE, CREATE,
     }
     init {
         describe = when (type) {
             FileCommandType.COPY -> "复制"
             FileCommandType.DELETE -> "删除"
+            FileCommandType.CREATE -> "创建"
         }
         initView()
     }
@@ -97,6 +98,11 @@ class FileCommandPane(
             FileCommandType.DELETE -> {
                 imageView.image = ImageIcon.DELETE24
                 title = "删除${totalNum}个文件"
+            }
+
+            FileCommandType.CREATE -> {
+                imageView.image = ImageIcon.NEW24
+                title = "创建${totalNum}个$sumTitle"
             }
         }
         titleHBox = HBox(10.0, imageView, Label(title).apply {
@@ -147,7 +153,10 @@ class FileCommandPane(
             HBox(10.0, ImageView(ImageIcon.CLOSE24), Label("${describe}出错！").apply { style = "-fx-font-size:19px" }),
             Label().apply {
                 textProperty().bind(name.map { "($it)" })
-                translateX = 40.0
+//                translateX = 40.0
+                tooltip = Tooltip(this.text).apply {
+                    style = "-fx-background-color: #FFFACD;-fx-text-fill:black;-fx-font-size: 13"
+                }
             })
         edArea.translateX = 30.0
         centerBox.children.clear()

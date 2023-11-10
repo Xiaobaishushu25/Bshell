@@ -98,6 +98,7 @@ class FileCommandTask(private val ssh: SSH,private val mainWindow: MainWindow) {
                     when(type){
                         FileCommandPane.FileCommandType.DELETE ->  mainWindow.treeArea.refreshFatherItem()
                         FileCommandPane.FileCommandType.COPY ->  mainWindow.treeArea.refreshItem()
+                        FileCommandPane.FileCommandType.CREATE -> TODO()
                     }
                     mainWindow.writeInfoLog("${javaClass.simpleName}完成")
                 }

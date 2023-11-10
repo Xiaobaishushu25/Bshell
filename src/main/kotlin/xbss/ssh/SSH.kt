@@ -159,7 +159,14 @@ open class SSH(val account: Account) {
     fun releaseChannel(channel: ChannelSftp) {
         chSftpPool.releaseChannel(channel)
     }
-    fun execCommand(command:String):String{
+    //todo :释放的有没有问题？ https://blog.csdn.net/weixin_43898952/article/details/119967566
+    /**执行单个命令的结果，返回exitCode和message
+     * exitCode为0表示成功，其他值（大部分是1）表示失败
+     */
+    data class ExecResponse(val exitCode: Int, val message: String)
+
+    //    fun execCommand(command:String):String{
+    fun execCommand(command: String): ExecResponse {
 //        println("执行命令 $command")
         val result = StringBuilder()
         var exitStatus = 0 //退出码
@@ -167,7 +174,7 @@ open class SSH(val account: Account) {
         execChannel.setCommand(command)
         execChannel.inputStream = null
         // 错误信息输出流，用于输出错误的信息，当exitstatus<0的时候
-        execChannel.setErrStream(System.err)
+//        execChannel.setErrStream(System.err)
 
         try {
             // 执行命令，等待执行结果
@@ -175,20 +182,29 @@ open class SSH(val account: Account) {
         }catch (e:Exception){
             println("发生异常$e")
             isConnectProperty.value = false
+            execChannel.disconnect()
             close()
-            return ""
+//            return ""
+            return ExecResponse(1, "")
         }
-
         // 获取命令执行结果
         val inputStream = execChannel.inputStream
+        val errStream = execChannel.errStream
+        // 错误信息输出流，用于输出错误的信息，当exitstatus<0的时候
         /**
          * 通过channel获取信息的方式，采用官方Demo代码
          */
         val tmp = ByteArray(1024)
         while (true) {
-//                println("还在循环"+execChannel.isClosed+" "+execChannel.isConnected)
             while (inputStream.available() > 0) {
                 val i: Int = inputStream.read(tmp, 0, 1024)
+                if (i < 0) {
+                    break
+                }
+                result.append(String(tmp, 0, i))
+            }
+            while (errStream.available() > 0) {
+                val i: Int = errStream.read(tmp, 0, 1024)
                 if (i < 0) {
                     break
                 }
@@ -199,7 +215,8 @@ open class SSH(val account: Account) {
                 if (inputStream.available() > 0) {
                     continue
                 }
-                exitStatus = execChannel.exitStatus
+                exitStatus = execChannel.exitStatus//正常是0 错误是1
+                execChannel.disconnect()
                 break
             }
         }
@@ -256,7 +273,8 @@ open class SSH(val account: Account) {
 //            isConnectProperty.value = false
 //            close()
 //        }
-        return result.toString()
+//        return result.toString()
+        return ExecResponse(exitStatus, result.toString())
     }
 
     /**
