@@ -1835,11 +1835,9 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
    * @return
    */
   private boolean processTerminalKeyPressed(KeyEvent e) {
-    System.out.println(e);
     if (hasUncommittedChars()) {
       return false;
     }
-
     try {
       final int keycode = e.getKeyCode();
       final char keychar = e.getKeyChar();
@@ -1882,7 +1880,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
         return true;
       }
       final byte[] code = myTerminalStarter.getCode(keycode, e.getModifiers());
-      if (code != null) { //这边好像只负责发送控制按键，比如删除等
+      if (code != null) { //这边好像只负责发送控制按键，比如删除等，正常的字母不是在这发送的
         myTerminalStarter.sendBytes(code, true);
         if (mySettingsProvider.scrollToBottomOnTyping() && isCodeThatScrolls(keycode)) {
           scrollToBottom();
@@ -2003,13 +2001,14 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
         return;
       }
       //v0.6.0 加的，使终端支持中文输入
-      char inputChar = e.getKeyChar();
-      if (Character.isDefined(inputChar)) {
-        String inputText = String.valueOf(inputChar);
-        // 处理输入的中文字符
-//        System.out.println("中文输入：" + inputText);
-        myTerminalStarter.sendString(inputText, true);
-      }
+//      char inputChar = e.getKeyChar();
+//      System.out.println("输入的char是"+inputChar);
+//      if (Character.isDefined(inputChar)) {
+//        String inputText = String.valueOf(inputChar);
+//        // 处理输入的中文字符
+////        System.out.println("中文输入：" + inputText);
+//        myTerminalStarter.sendString(inputText, true);
+//      }
       //不知道下面这个什么意思，我就加在中间了
 
       if (myIgnoreNextKeyTypedEvent || processTerminalKeyTyped(e)) {
