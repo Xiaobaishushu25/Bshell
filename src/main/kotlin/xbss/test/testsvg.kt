@@ -8,6 +8,7 @@ package xbss.test
  */
 import javafx.animation.*
 import javafx.application.Application
+import javafx.scene.Cursor
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.HBox
@@ -106,7 +107,23 @@ class LightningShape : Application() {
         }
         val root = HBox()
 //        root.children.addAll(svgPath,xPath,plusPath)
-        root.children.addAll(svgPath,xPath,pane)
+        val eyePasswordT = SVGPath().apply {
+            content = "M1024 497.664c0 100.352-210.944 313.344-512 313.344-292.864 0-512-208.896-512-313.344C0 393.216 221.184 184.32 512 184.32c303.104 0 512 208.896 512 313.344zM514.048 241.664c-137.216 0-245.76 114.688-245.76 256s110.592 256 245.76 256c137.216 0 245.76-114.688 245.76-256s-110.592-256-245.76-256z m-2.048 92.16c-86.016 0-157.696 73.728-157.696 161.792 0 90.09152 69.632 161.77152 157.696 161.77152 86.016 0 157.696-73.728 157.696-161.77152 0-88.064-69.632-161.792-157.696-161.792z"
+//            fill = Paint.valueOf("#00FF00")
+            cursor = Cursor.HAND
+            isPickOnBounds = true
+            scaleX = 24.0/1024.0
+            scaleY = 24.0/1024.0
+            style="-fx-background-color:blue"
+            val centerX: Double = 1024 / 24.0
+            val centerY: Double = 1024 / 24.0
+            prefHeight(24.0)
+            prefWidth(24.0)
+//            val translate = Translate(-centerX * (1 - xScalexScale), -centerY * (1 - yScale))
+//            transforms.addAll()
+        }
+        root.children.addAll(eyePasswordT,svgPath,xPath,pane)
+//        root.children.addAll(HBox(eyePasswordT).apply {  style="-fx-background-color:blue" })
         val vBox = VBox(root)
         val scene = Scene(vBox, 300.0, 400.0)
         primaryStage.title = "Lightning Shape"

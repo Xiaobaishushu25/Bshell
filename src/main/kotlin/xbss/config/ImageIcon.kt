@@ -52,4 +52,6 @@ object ImageIcon {
     val PAY = Image(Image::class.java.getResourceAsStream("/img/pay.png"))
     val NEW24 = Image(Image::class.java.getResourceAsStream("/img/new24.png"))
     val INFO24 = Image(Image::class.java.getResourceAsStream("/img/info24.png"))
+    val PWDSHOW = Image(Image::class.java.getResourceAsStream("/img/pwdshow24.png"))
+    val PWDHIDE = Image(Image::class.java.getResourceAsStream("/img/pwdhide24.png"))
 }

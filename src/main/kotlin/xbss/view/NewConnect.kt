@@ -2,18 +2,20 @@ package xbss.view
 
 import javafx.animation.FadeTransition
 import javafx.application.Application
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
+import javafx.scene.Cursor
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.PasswordField
 import javafx.scene.control.TextField
 import javafx.scene.image.ImageView
-import javafx.scene.input.MouseButton
 import javafx.scene.layout.HBox
+import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.scene.shape.Circle
 import javafx.stage.Modality
@@ -43,6 +45,13 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
     private var cdPathT: TextField = getTextFiled("", double = 230.0).apply { promptText = "可不填" }
     private var initCommandT: TextField =
         getTextFiled(double = 230.0).apply { promptText = "如conda activate xx 可不填" }
+    private lateinit var passwordTShow:TextField
+    private var pwdShowState = SimpleBooleanProperty(false) //默认密码是不可视的
+    private var pwdStateIcon:ImageView = ImageView(ImageIcon.PWDHIDE).apply {
+        isPickOnBounds=true
+        translateX = 15.0
+        cursor = Cursor.HAND
+    }
     private  var commentT:TextField = getTextFiled(text = "无",double = 230.0, moveX = 30.0)
     private lateinit var tip:HBox
     private lateinit var hisTry:HBox //历史尝试记录
@@ -75,7 +84,19 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
         passwordT = PasswordField().apply {
             style = "-fx-border-radius: 4px;-fx-border-color: #708090;-fx-background-radius: 4px;-fx-background-insets:0;-fx-background-color:transparent"
             translateX = 15.0
+            isVisible = true
+            visibleProperty().bind(pwdShowState.map { !it })
+
         }
+        //两个密码框叠放，isVisible属性绑定是可视状态
+        passwordTShow = TextField().apply {
+            style = "-fx-border-radius: 4px;-fx-border-color: #708090;-fx-background-radius: 4px;-fx-background-insets:0;-fx-background-color:transparent"
+            translateX = 15.0
+            textProperty().bindBidirectional(passwordT.textProperty())
+            isVisible = false
+            visibleProperty().bind(pwdShowState)
+        }
+        val pwdPane = StackPane(passwordTShow, passwordT)
         tip = HBox(10.0).apply {
             isVisible = false
             alignment = Pos.CENTER_LEFT
@@ -97,7 +118,8 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
             HBox(15.0, getLabel("名称"), nickNameT),
             HBox(15.0, getLabel("主机"), hostT, getLabel("端口"), portT),
             HBox(15.0, getLabel("用户名"), usernameT),
-            HBox(15.0, getLabel("密码"), passwordT),
+//            HBox(15.0, getLabel("密码"), passwordT),
+            HBox(15.0, getLabel("密码"), pwdPane,pwdStateIcon),
             HBox(15.0, getLabel("映射路径"), cdPathT),
             HBox(15.0, getLabel("初始命令"), initCommandT),
             HBox(15.0, getLabel("备注"), commentT).apply { alignment = Pos.BOTTOM_LEFT },
@@ -169,6 +191,12 @@ class NewConnect(private val account: Account?= null,private val isChange:Boolea
                 test.isDisable = false
                 showTip(true)
             }
+        }
+        pwdShowState.addListener { _, _, newValue ->
+            pwdStateIcon.image =if (newValue){ ImageIcon.PWDSHOW }else{ ImageIcon.PWDHIDE }
+        }
+        pwdStateIcon.setOnMouseClicked {
+            pwdShowState.value = !pwdShowState.value
         }
     }
     private fun getLabel(text:String) = Label(text).apply { style = "-fx-font-size:15px;"}
