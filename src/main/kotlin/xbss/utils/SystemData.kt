@@ -3,7 +3,6 @@ package xbss.utils
 import javafx.application.Platform
 import javafx.geometry.Insets
 import javafx.scene.layout.HBox
-import xbss.MainAPP
 import xbss.config.GlobalLog
 import xbss.ssh.SSH
 import java.util.*
@@ -44,9 +43,11 @@ import kotlin.concurrent.timerTask
  *
  */
 class SystemData(private val ssh: SSH):HBox() {
-    lateinit var timer: Timer
+    //lateinit var timer: Timer
+    var timer: Timer? = null
     private val uiList = mutableListOf<MessageBar>()
     private val dataList = mutableListOf<Pair<Double,String>>()
+    private var hasGpu = false
     /**
      *  数据是 index, memory.used [MiB], memory.total [MiB]
      * 0, 0 MiB, 24576 MiB
@@ -59,7 +60,7 @@ class SystemData(private val ssh: SSH):HBox() {
         uiList.add(MessageBar("CPU",MessageBar.Type.CPU))
         uiList.add(MessageBar("内存",MessageBar.Type.MEMORY))
         try {
-            MainAPP.service.submit {
+//            MainAPP.service.submit {
 //                val gpuNum = ssh.execCommand("nvidia-smi --list-gpus | wc -l").replace("\n", "").toInt()
 //                Platform.runLater {
 //                    for (i in 0 until gpuNum){
@@ -70,8 +71,14 @@ class SystemData(private val ssh: SSH):HBox() {
 ////                    for (s in uiList)
 ////                        this.children.add(s)
 //                }
+//            }
+            var gpuNum = 0
+            try {
+                gpuNum = ssh.execCommand("nvidia-smi --list-gpus | wc -l").message.replace("\n", "").toInt()
+                hasGpu = true
+            }catch(e:Exception){
+                GlobalLog.writeErrorLog("gpuNum解析失败")
             }
-            val gpuNum = ssh.execCommand("nvidia-smi --list-gpus | wc -l").message.replace("\n", "").toInt()
 //            Platform.runLater {
 //                for (i in 0 until gpuNum){
 //                    val messageBar = MessageBar("GPU${i}", MessageBar.Type.GPU)
@@ -81,22 +88,24 @@ class SystemData(private val ssh: SSH):HBox() {
 ////                    for (s in uiList)
 ////                        this.children.add(s)
 //            }
-            for (i in 0 until gpuNum){
-                val messageBar = MessageBar("GPU${i}", MessageBar.Type.GPU)
-                uiList.add(messageBar)
+            if (hasGpu){
+                for (i in 0 until gpuNum){
+                    val messageBar = MessageBar("GPU${i}", MessageBar.Type.GPU)
+                    uiList.add(messageBar)
+                }
             }
             for (s in uiList)
                 this.children.add(s)
             timer = Timer()
             val timerTask = getTimerTask()
-            timer.schedule(timerTask,5000,15000)
+            timer!!.schedule(timerTask,5000,15000)
             ssh.isConnectProperty.addListener { _,_,newValue ->
                 if (!newValue)
-                    timer.cancel()
+                    timer!!.cancel()
                 else{
                     try {
                         timer = Timer()
-                        timer.schedule(getTimerTask(),5000,15000)
+                        timer!!.schedule(getTimerTask(),5000,15000)
                     }catch (e:Exception){
                         println("抛个异常$e")
                     }
@@ -106,7 +115,7 @@ class SystemData(private val ssh: SSH):HBox() {
             this.spacing = 20.0
             this.prefHeight = 20.0
         } catch (e: Exception) {
-            //如果上面有转换错误（一般由于\r\n等没处理），他不会抛异常报错而是直接卡在转换失败的地方，我try catch也捕获不到，但是可以正常运行了，只是这个功能没了
+            //如果上面有转换错误（一般由于\r\n等没处理,或者根本没有显卡），他不会抛异常报错而是直接卡在转换失败的地方，我try catch也捕获不到，但是可以正常运行了，只是这个功能没了
             println("初始化系统信息失败！")
         }
     }
@@ -149,22 +158,26 @@ class SystemData(private val ssh: SSH):HBox() {
             }else{
                 compute(memoryResult[1].removeSuffix("G"),memoryResult[0].removeSuffix("G"))
             }
+
 //                val memoryPer = compute(memoryResult[1].removeSuffix("G"),memoryResult[0].removeSuffix("G"))
 
             dataList.add(Pair(memoryPer,"${memoryResult[1]}/${memoryResult[0]}"))
-            val gpuResult =
-                ssh.execCommand("nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv | tail -n+2").message.replace(
-                    " ",
-                    ""
-                ).split("\n")
-            // 3, 21177 MiB, 24576 MiB
+            if (hasGpu){
+                val gpuResult =
+                    ssh.execCommand("nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv | tail -n+2").message.replace(
+                        " ",
+                        ""
+                    ).split("\n")
+                // 3, 21177 MiB, 24576 MiB
+                print("gpuResult $gpuResult")
 
-            for (s in gpuResult){
-                if (s.isNotEmpty()){ // 会有空行
-                    val strings = s.split(",")
-                    val nowValue = strings[1].replace("MiB", "")
-                    val maxValue = strings[2].replace("MiB", "")
-                    dataList.add(Pair((compute(nowValue,maxValue)),"${strings[1].replace("MiB", "M")}/${strings[2].replace("MiB", "M")}"))
+                for (s in gpuResult){
+                    if (s.isNotEmpty()){ // 会有空行
+                        val strings = s.split(",")
+                        val nowValue = strings[1].replace("MiB", "")
+                        val maxValue = strings[2].replace("MiB", "")
+                        dataList.add(Pair((compute(nowValue,maxValue)),"${strings[1].replace("MiB", "M")}/${strings[2].replace("MiB", "M")}"))
+                    }
                 }
             }
             Platform.runLater {

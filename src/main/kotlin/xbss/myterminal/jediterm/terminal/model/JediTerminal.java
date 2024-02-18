@@ -3,8 +3,6 @@ package xbss.myterminal.jediterm.terminal.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import xbss.myterminal.jediterm.core.Color;
 import xbss.myterminal.jediterm.core.Platform;
 import xbss.myterminal.jediterm.core.TerminalCoordinates;
@@ -111,7 +109,7 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
   }
 
   private void wrapLines() {
-//    System.out.println(myCursorX +"   "+ myTerminalWidth);
+//    System.out.println("进入wrapLines"+myCursorX +"   "+ myTerminalWidth);
     if (myCursorX >= myTerminalWidth) {
       myCursorX = 0;
       // clear the end of the line in the text buffer 
@@ -130,7 +128,6 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
 
   @Override
   public void writeCharacters(String string) {
-//    System.out.println("写入"+string);
     String normalized = Normalizer.normalize(string, Normalizer.Form.NFC);
 //    System.out.println("准备添加"+normalized);
     writeDecodedCharacters(decodeUsingGraphicalState(normalized));
@@ -150,6 +147,31 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
 
       if (string.length != 0) {
         CharBuffer characters = newCharBuf(string);
+        //数据是我ce死你: command not found数据长度是27
+//        System.out.println("数据是"+characters+"数据长度是"+characters.length());
+//        if ((myCursorX+characters.length()) > myTerminalWidth){
+//          for (int i = 0; i < string.length; i++) {
+//            char[] charArray = new char[1];
+//            System.out.println("遍历string是"+string[i]);
+//            charArray[0] = string[i];
+//            myTerminalTextBuffer.writeString(myCursorX,myCursorY,newCharBuf(charArray));
+//            if (isChineseChar(string[i])){
+//              myCursorX += 2;
+//            }else {
+//              myCursorX +=1;
+//            }
+//            wrapLines();
+//          }
+//          characters.forEach((s) ->{
+          //这样不行，遍历不出，有不知道什么字符
+//            System.out.println("遍历characters是"+s);
+//            myTerminalTextBuffer.writeString(myCursorX, myCursorY, characters);
+//            myCursorX += characters.length();
+//          });
+//        }else{
+//          myTerminalTextBuffer.writeString(myCursorX, myCursorY, characters);
+//          myCursorX += characters.length();
+//        }
         myTerminalTextBuffer.writeString(myCursorX, myCursorY, characters);
         myCursorX += characters.length();
       }
@@ -158,6 +180,15 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
     } finally {
       myTerminalTextBuffer.unlock();
     }
+  }
+
+  public static boolean isChineseChar(char c) {
+    // 中文Unicode编码范围
+    int chineseStart = 0x4E00; // 第一个中文字符的Unicode编码
+    int chineseEnd = 0x9FFF;   // 最后一个中文字符的Unicode编码
+
+    // 判断字符的Unicode是否在中文范围内
+    return c >= chineseStart && c <= chineseEnd;
   }
 
   /**
@@ -234,11 +265,6 @@ public class JediTerminal implements Terminal, TerminalMouseListener, TerminalCo
     } finally {
       myTerminalTextBuffer.unlock();
     }
-  }
-
-  public void crnl() {
-    carriageReturn();
-    newLine();
   }
 
   @Override

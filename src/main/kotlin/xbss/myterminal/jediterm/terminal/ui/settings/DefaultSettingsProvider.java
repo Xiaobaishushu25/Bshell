@@ -195,7 +195,7 @@ public class DefaultSettingsProvider implements SettingsProvider {
   /**
    * 设置选中的高亮前景（文字）及背景色
    * 是否启用选中颜色反转 {@link #useInverseSelectionColor()}
-   * 在TerminalPanel中会使用此TextStyle{@link xbss.myterminal.jediterm.terminal.ui.TerminalPanel#getSelectionStyle(TextStyle)}
+   * 在TerminalPanel中会使用此TextStyle{@link TerminalPanel#getSelectionStyle(TextStyle)}
    * 注意：仅当此类的useInverseSelectionColor（）函数返回false时起作用，否则会使用反转颜色
    * @return
    */

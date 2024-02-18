@@ -277,7 +277,7 @@ class CommandArea(private val ssh: SSH,private val mainWindow: MainWindow):Stack
         settingsProvider.initSelectionStyle(Setting.terminalTextColorSelecting, Setting.terminalBackColorSelecting)
         settingsProvider.initTextColorUnSelected(Setting.terminalTextColorUnSelected)
         settingsProvider.initTerminalBackColorSelecting(Setting.terminalBackColorSelecting)
-        //这个列是影响每行最多字符数,行数貌似影响高度
+        //这个列是影响每行最多字符数(就是下面的terminalTextBuffer的初始宽度),行数貌似影响高度
         widget = JediTermWidget(119, 54, settingsProvider)
         widget.ttyConnector = ssh.getPtyProcessTtyConnector()
         widget.start()
@@ -342,7 +342,7 @@ class CommandArea(private val ssh: SSH,private val mainWindow: MainWindow):Stack
      *
      */
     private fun sendCommand(initialCommand:String? = null){
-        val command = initialCommand?.let { it }?:run{textField.text}
+        val command = initialCommand ?:run{textField.text}
 //        val command = textField.text
 //        input.write("$command\r".toByteArray())
         mainWindow.writeInfoLog("执行linux命令：$command")

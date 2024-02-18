@@ -1,14 +1,9 @@
 package xbss.view
 
 import javafx.geometry.Orientation
-import javafx.scene.Parent
 import javafx.scene.control.SplitPane
 import javafx.scene.control.TabPane
-import javafx.scene.control.skin.TabPaneSkin
 import javafx.scene.image.ImageView
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyCodeCombination
-import javafx.scene.input.KeyCombination
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 import org.slf4j.Logger
@@ -21,7 +16,6 @@ import xbss.controller.FileTaskHandler
 import xbss.server.mapper.pojo.Account
 import xbss.ssh.SSH
 import xbss.utils.SystemData
-import xbss.MainAPP.Companion.stage
 
 /**
  * @author  Xbss
@@ -146,7 +140,7 @@ class MainWindow(val account: Account,val ssh:SSH):AnchorPane(){
 //        val input= KeyCodeCombination(KeyCode.I, KeyCombination.SHORTCUT_DOWN)
 //    }
     fun closeAll(){
-        systemData.timer.cancel()
+        systemData.timer?.cancel()
         ssh.close()
         commandArea.closeTerminal()
     }

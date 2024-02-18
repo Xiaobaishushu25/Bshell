@@ -60,6 +60,7 @@ public class JediEmulator extends DataStreamIteratingEmulator {
       case Ascii.LF: //Line Feed or New Line (NL). (LF is Ctrl-J)
       case Ascii.VT: //Vertical Tab (Ctrl-K). This is treated the same as LF.
         // '\n'
+//        System.out.println("该换行了");
         terminal.newLine();
         break;
       case Ascii.SI: //Shift In (Ctrl-O) -> Switch to Standard Character Set. This invokes the G0 character set (the default)
@@ -89,6 +90,9 @@ public class JediEmulator extends DataStreamIteratingEmulator {
           myDataStream.pushChar(ch);
           String nonControlCharacters = myDataStream.readNonControlCharacters(terminal.distanceToLineEnd());
 //          System.out.println("在这里处理字符"+ch+"准备写入"+nonControlCharacters);
+//          for (char c : nonControlCharacters.toCharArray()) {
+//          terminal.writeCharacters(String.valueOf(c));
+//          }
           terminal.writeCharacters(nonControlCharacters);
         }
         break;
