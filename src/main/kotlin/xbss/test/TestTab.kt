@@ -53,7 +53,7 @@ class TestTab:Application() {
             prefWidth = InitSize.APP_WIDTH
             prefHeight = InitSize.TABPANE_HEIGHT
             tabDragPolicy = TabPane.TabDragPolicy.REORDER // 启用重新排序标签页
-            stylesheets.add(this::class.java.getResource("/css/xbss.css").toExternalForm())
+            stylesheets.add(this::class.java.getResource("/css/xbss.css")!!.toExternalForm())
         }
         val button = Button("change").apply {
             setOnAction {

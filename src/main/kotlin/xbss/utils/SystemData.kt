@@ -116,7 +116,8 @@ class SystemData(private val ssh: SSH):HBox() {
             this.prefHeight = 20.0
         } catch (e: Exception) {
             //如果上面有转换错误（一般由于\r\n等没处理,或者根本没有显卡），他不会抛异常报错而是直接卡在转换失败的地方，我try catch也捕获不到，但是可以正常运行了，只是这个功能没了
-            println("初始化系统信息失败！")
+//            println("初始化系统信息失败！")
+            GlobalLog.writeErrorLog("初始化系统信息失败！")
         }
     }
 
@@ -169,7 +170,6 @@ class SystemData(private val ssh: SSH):HBox() {
                         ""
                     ).split("\n")
                 // 3, 21177 MiB, 24576 MiB
-                print("gpuResult $gpuResult")
 
                 for (s in gpuResult){
                     if (s.isNotEmpty()){ // 会有空行
