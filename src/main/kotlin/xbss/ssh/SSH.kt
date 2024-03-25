@@ -100,6 +100,7 @@ open class SSH(val account: Account) {
                 successP.value = SSHMessage(null,"连接超时")
                 println("【SSH连接】连接失败:失败原因：超时")
             }catch (e: JSchException){
+                println("失败原因${e}")
                 progressP.value = "连接失败（Auth fail）"
                 successP.value = SSHMessage(null,"Auth fail")
                 println("【SSH连接】连接失败：失败原因：Auth fail")
