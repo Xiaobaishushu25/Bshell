@@ -127,6 +127,7 @@ class InitPane(private val tab: Tab):AnchorPane() {
                             }
                         }
                         this.initSSH()
+                        println("this.initSSH()")
                     }
                     it.consume()
 //                mainWindow = MainWindow(account)

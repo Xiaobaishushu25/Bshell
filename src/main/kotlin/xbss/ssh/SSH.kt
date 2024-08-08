@@ -45,7 +45,7 @@ open class SSH(val account: Account) {
         isConnectProperty.addListener { _,_,_ -> MainAPP.highlightIcon() }
     }
     fun initSSH(){
-        progressP.value ="正在建立连接..."
+        progressP.value = "正在建立连接..."
         val jSch = JSch()
         session = jSch.getSession(account.username, account.host, account.port.toInt())
         session.setPassword(account.password)
@@ -77,7 +77,6 @@ open class SSH(val account: Account) {
                     //如果是第一次连接，需要初始化文件树需要用到sftp，要先初始化sftp池再返回
                     if (firstConnect)
                         chSftpPool = SftpChannelPool(session)
-
                     progressP.value = "正在初始化界面..."
                     isConnectProperty.value = true
                     successP.value = SSHMessage(this,"连接成功")
@@ -87,7 +86,6 @@ open class SSH(val account: Account) {
                     //(base) [msfgroup@msfgroup1 ~]$
                     if (!firstConnect)
                         chSftpPool = SftpChannelPool(session)
-
                     timer = Timer()
                     timer.schedule(getTimerTask(),5000,15000)
                 } else {
@@ -98,11 +96,9 @@ open class SSH(val account: Account) {
             }catch (e: SocketTimeoutException){
                 progressP.value = "连接失败（超时）"
                 successP.value = SSHMessage(null,"连接超时")
-                println("【SSH连接】连接失败:失败原因：超时")
             }catch (e: JSchException){
                 progressP.value = "连接失败（Auth fail）"
                 successP.value = SSHMessage(null,"Auth fail")
-                println("【SSH连接】连接失败：失败原因：Auth fail")
             }
         }
     }
@@ -183,7 +179,6 @@ open class SSH(val account: Account) {
         execChannel.inputStream = null
         // 错误信息输出流，用于输出错误的信息，当exitstatus<0的时候
 //        execChannel.setErrStream(System.err)
-
         try {
             // 执行命令，等待执行结果
             execChannel.connect()
@@ -228,60 +223,6 @@ open class SSH(val account: Account) {
                 break
             }
         }
-//        try {
-////            if (!session.isConnected) {
-////                isConnectProperty.value = false
-////                println("Session未连接")
-////                return ""
-////            }
-//            execChannel = session.openChannel("exec") as ChannelExec
-//            execChannel.setCommand(command)
-//            execChannel.inputStream = null
-//            // 错误信息输出流，用于输出错误的信息，当exitstatus<0的时候
-//            execChannel.setErrStream(System.err)
-//
-//            // 执行命令，等待执行结果
-//            execChannel.connect()
-//
-//            // 获取命令执行结果
-//            val inputStream = execChannel.inputStream
-//            /**
-//             * 通过channel获取信息的方式，采用官方Demo代码
-//             */
-//            val tmp = ByteArray(1024)
-//            while (true) {
-////                println("还在循环"+execChannel.isClosed+" "+execChannel.isConnected)
-//                while (inputStream.available() > 0) {
-//                    val i: Int = inputStream.read(tmp, 0, 1024)
-//                    if (i < 0) {
-//                        println("读取结束")
-////                        isConnectProperty.value = false
-//                        break
-//                    }
-//                    result.append(String(tmp, 0, i))
-//                }
-//                // 从channel获取全部信息之后，channel会自动关闭
-//                if (execChannel.isClosed) {
-////                    println("execChannel.isClosed")
-//                    if (inputStream.available() > 0) {
-//                        println("进入inputStream.available() > 0")
-//                        continue
-//                    }
-//                    exitStatus = execChannel.exitStatus
-//                    break
-//                }
-////                if (!session.isConnected) {
-////                    isConnectProperty.value = false
-////                    println("循环里面Session未连接")
-////                    break
-////                }
-//            }
-//        } catch (e: Exception) {
-//            println("发生异常$e")
-//            isConnectProperty.value = false
-//            close()
-//        }
-//        return result.toString()
         if (exitStatus != 0) {
             GlobalLog.writeErrorLog("执行命令${command}失败，错误信息：$result")
         }

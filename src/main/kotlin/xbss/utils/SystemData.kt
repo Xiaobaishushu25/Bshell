@@ -46,6 +46,8 @@ class SystemData(private val ssh: SSH):HBox() {
     //lateinit var timer: Timer
     var timer: Timer? = null
     private val uiList = mutableListOf<MessageBar>()
+
+    //百分比条上面的文字描述，double是百分比，String是描述，eg：18.6%, 4532M/24268M
     private val dataList = mutableListOf<Pair<Double,String>>()
     private var hasGpu = false
     /**
@@ -116,7 +118,6 @@ class SystemData(private val ssh: SSH):HBox() {
             this.prefHeight = 20.0
         } catch (e: Exception) {
             //如果上面有转换错误（一般由于\r\n等没处理,或者根本没有显卡），他不会抛异常报错而是直接卡在转换失败的地方，我try catch也捕获不到，但是可以正常运行了，只是这个功能没了
-//            println("初始化系统信息失败！")
             GlobalLog.writeErrorLog("初始化系统信息失败！")
         }
     }
@@ -153,16 +154,20 @@ class SystemData(private val ssh: SSH):HBox() {
             val memoryResult =
                 ssh.execCommand("free -h | awk 'NR==2{print \$2,\$3}'").message.replace("\n", "").replace("\r", "")
                     .split(" ")
-            val memoryPer = if (memoryResult[1].last()=='M'){
-                val value1 = memoryResult[1].removeSuffix("M")
-                compute(value1.toDouble().div(1024).reserveOne(),memoryResult[0].removeSuffix("G"))
-            }else{
-                compute(memoryResult[1].removeSuffix("G"),memoryResult[0].removeSuffix("G"))
-            }
+            //正常的输出是[251G, 36G]，有时获取不到是[]，所以要判断一下
+            if (memoryResult.size == 2) {
 
+                val memoryPer = if (memoryResult[1].last() == 'M') {
+                    val value1 = memoryResult[1].removeSuffix("M")
+                    compute(value1.toDouble().div(1024).reserveOne(), memoryResult[0].removeSuffix("G"))
+                } else {
+                    compute(memoryResult[1].removeSuffix("G"), memoryResult[0].removeSuffix("G"))
+                }
+                dataList.add(Pair(memoryPer, "${memoryResult[1]}/${memoryResult[0]}"))
+
+            }
 //                val memoryPer = compute(memoryResult[1].removeSuffix("G"),memoryResult[0].removeSuffix("G"))
 
-            dataList.add(Pair(memoryPer,"${memoryResult[1]}/${memoryResult[0]}"))
             if (hasGpu){
                 val gpuResult =
                     ssh.execCommand("nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv | tail -n+2").message.replace(

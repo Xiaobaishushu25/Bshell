@@ -16,6 +16,7 @@ import xbss.view.MainWindow
  * @describe
  */
 class FileCommandTask(private val ssh: SSH,private val mainWindow: MainWindow) {
+    private val batchSize = 20
     private lateinit var type:FileCommandPane.FileCommandType
     private val nowIndex = SimpleIntegerProperty(0)
     private var totalNum :Int = 0
@@ -47,14 +48,18 @@ class FileCommandTask(private val ssh: SSH,private val mainWindow: MainWindow) {
                 //判断后在操作，先进行总的判断会不会更快？
                 when(type){
                     FileCommandPane.FileCommandType.DELETE -> {
-                        waitToOperatePathList.forEachIndexed{ index,it ->
-                            Platform.runLater { nowIndex.value = index + 1 }
-                            updateMessage(it.split("/").last())
+                        //计算当前任务耗时
+                        val startTime = System.currentTimeMillis()
+                        waitToOperatePathList.chunked(batchSize).forEachIndexed { batchIndex, batch ->
+                            Platform.runLater { nowIndex.value = batchIndex * batchSize + 1 }
+                            val pathsToDelete = batch.joinToString(" ")
+                            updateMessage(batch.last().split("/").last())  // 更新最后一个文件名
                             try {
-                                mainWindow.writeInfoLog("${javaClass.simpleName}：删除$it(rm -r $it)")
-//                                println("进来删除$it")
-                                val result = ssh.execCommand("rm -r $it")
-                                mainWindow.writeInfoLog("${javaClass.simpleName}：删除${it}结果$result")
+                                val result = ssh.execCommand("rm -r $pathsToDelete")
+                                // 如果需要记录每个文件的删除日志，可以在这里进行
+                                batch.forEach { filePath ->
+                                    mainWindow.writeInfoLog("${javaClass.simpleName}：删除$filePath 结果$result")
+                                }
                             } catch (e: Exception) {
                                 Platform.runLater { nowStatus.value = 5 }
                                 println("捕获到异常")
@@ -65,16 +70,47 @@ class FileCommandTask(private val ssh: SSH,private val mainWindow: MainWindow) {
                                 return
                             }
                         }
+
+//                        waitToOperatePathList.forEachIndexed{ index,it ->
+//                            Platform.runLater { nowIndex.value = index + 1 }
+//                            updateMessage(it.split("/").last())
+//                            try {
+////                                mainWindow.writeInfoLog("${javaClass.simpleName}：删除$it(rm -r $it)")
+////                                println("进来删除$it")
+//                                val result = ssh.execCommand("rm -r $it")
+////                                mainWindow.writeInfoLog("${javaClass.simpleName}：删除${it}结果$result")
+//                            } catch (e: Exception) {
+//                                Platform.runLater { nowStatus.value = 5 }
+//                                println("捕获到异常")
+//                                error = true
+//                                println(e.message)
+//                                updateMessage(e.message)
+//                                mainWindow.writeErrorLog("${javaClass.simpleName}：$error")
+//                                return
+//                            }
+//                        }
+                        val endTime = System.currentTimeMillis()
+                        //计算当前任务耗时，用秒表示
+                        val time = (endTime - startTime) / 1000
+                        println("删除耗时${time}秒")
                     }
                     FileCommandPane.FileCommandType.COPY -> {
-                        waitToOperatePathList.forEachIndexed{ index,it ->
-                            Platform.runLater { nowIndex.value = index + 1 }
-                            updateMessage(it.split("/").last())
-                            try {
-                                mainWindow.writeInfoLog("${javaClass.simpleName}：将{$it}复制到$pastePath(cp -r $it $pastePath)")
-                                val result = ssh.execCommand("cp -r $it $pastePath")
-                                mainWindow.writeInfoLog("${javaClass.simpleName}：将{$it}复制到${pastePath}结果${result}")
+                        waitToOperatePathList.chunked(batchSize).forEachIndexed { batchIndex, batch ->
+                            Platform.runLater { nowIndex.value = batchIndex * batchSize + 1 }
 
+                            // 拼接成一个批量复制命令
+                            val commandsToExecute = batch.joinToString(" && ") { "cp -r $it $pastePath" }
+                            updateMessage(batch.last().split("/").last())  // 更新最后一个文件名
+
+                            try {
+                                mainWindow.writeInfoLog("${javaClass.simpleName}：将${batch.joinToString(", ")}复制到$pastePath(cp -r ...)")
+
+                                val result = ssh.execCommand(commandsToExecute)
+
+                                // 记录每个文件的复制结果日志
+                                batch.forEach { filePath ->
+                                    mainWindow.writeInfoLog("${javaClass.simpleName}：将{$filePath}复制到${pastePath}结果${result}")
+                                }
                             } catch (e: Exception) {
                                 Platform.runLater { nowStatus.value = 5 }
                                 println("捕获到异常")
@@ -86,6 +122,27 @@ class FileCommandTask(private val ssh: SSH,private val mainWindow: MainWindow) {
                             }
                         }
                     }
+
+//                    FileCommandPane.FileCommandType.COPY -> {
+//                        waitToOperatePathList.forEachIndexed{ index,it ->
+//                            Platform.runLater { nowIndex.value = index + 1 }
+//                            updateMessage(it.split("/").last())
+//                            try {
+//                                mainWindow.writeInfoLog("${javaClass.simpleName}：将{$it}复制到$pastePath(cp -r $it $pastePath)")
+//                                val result = ssh.execCommand("cp -r $it $pastePath")
+//                                mainWindow.writeInfoLog("${javaClass.simpleName}：将{$it}复制到${pastePath}结果${result}")
+//
+//                            } catch (e: Exception) {
+//                                Platform.runLater { nowStatus.value = 5 }
+//                                println("捕获到异常")
+//                                error = true
+//                                println(e.message)
+//                                updateMessage(e.message)
+//                                mainWindow.writeErrorLog("${javaClass.simpleName}：$error")
+//                                return
+//                            }
+//                        }
+//                    }
                     else -> {}
                 }
             }

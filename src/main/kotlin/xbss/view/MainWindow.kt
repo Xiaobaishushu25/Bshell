@@ -140,7 +140,7 @@ class MainWindow(val account: Account,val ssh:SSH):AnchorPane(){
 //        val input= KeyCodeCombination(KeyCode.I, KeyCombination.SHORTCUT_DOWN)
 //    }
     fun closeAll(){
-        systemData.timer?.cancel()
+//        systemData.timer?.cancel()
         ssh.close()
         commandArea.closeTerminal()
     }
