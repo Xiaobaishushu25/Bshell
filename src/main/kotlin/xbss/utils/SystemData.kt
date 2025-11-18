@@ -155,13 +155,16 @@ class SystemData(private val ssh: SSH):HBox() {
                 ssh.execCommand("free -h | awk 'NR==2{print \$2,\$3}'").message.replace("\n", "").replace("\r", "")
                     .split(" ")
             //正常的输出是[251G, 36G]，有时获取不到是[]，所以要判断一下
+            println("memoryResult:$memoryResult")
             if (memoryResult.size == 2) {
 
                 val memoryPer = if (memoryResult[1].last() == 'M') {
                     val value1 = memoryResult[1].removeSuffix("M")
                     compute(value1.toDouble().div(1024).reserveOne(), memoryResult[0].removeSuffix("G"))
-                } else {
+                } else if (memoryResult[1].last() == 'G') {
                     compute(memoryResult[1].removeSuffix("G"), memoryResult[0].removeSuffix("G"))
+                } else {//memoryResult:[377Gi, 14Gi]
+                    compute(memoryResult[1].removeSuffix("Gi"), memoryResult[0].removeSuffix("Gi"))
                 }
                 dataList.add(Pair(memoryPer, "${memoryResult[1]}/${memoryResult[0]}"))
 

@@ -243,6 +243,10 @@
                 <version>1.7.5</version>
                 <configuration>
                     <bundleJre>true</bundleJre>
+                    <additionalModules>
+                        <additionalModule>jdk.crypto.ec</additionalModule>
+                    </additionalModules>
+                    <!--                    <bundleJre>false</bundleJre>-->
 <!--                    <mainClass>cn.lichenfei.javapackage.Start</mainClass>-->
                     <mainClass>xbss.APP</mainClass>
                     <generateInstaller>false</generateInstaller>

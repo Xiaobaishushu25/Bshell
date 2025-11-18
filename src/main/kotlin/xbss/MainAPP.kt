@@ -1,5 +1,6 @@
 package xbss
 
+import com.jcraft.jsch.JSch
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.event.EventHandler
@@ -15,6 +16,7 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.SVGPath
 import javafx.stage.Stage
 import xbss.config.AppVersion
+import xbss.config.GlobalLog
 import xbss.config.ImageIcon
 import xbss.config.InitSize
 import xbss.view.DonateStage
@@ -49,6 +51,16 @@ class MainAPP:Application() {
         }
     }
     override fun start(primaryStage: Stage?) {
+//        JSch.setLogger(object : com.jcraft.jsch.Logger {
+//            override fun isEnabled(level: Int): Boolean {
+//                return true // 启用所有日志级别
+//            }
+//
+//            override fun log(level: Int, message: String) {
+//                println("JSch[$level]: $message") // 保持原日志格式
+//                GlobalLog.writeInfoLog("JSch[$level]: $message")
+//            }
+//        })
         stage = primaryStage!!
         val initTab = Tab("新标签页")
         initTab.content = InitPane(initTab)
